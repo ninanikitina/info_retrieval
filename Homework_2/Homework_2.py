@@ -22,7 +22,7 @@ def clean_tokens(tokens):
     return tokens
 
 
-def get_rank_frequency(tokens, n):
+def get_rank_frequency(tokens, n, constant):
     n_grams = ngrams(tokens, n)
     df_rank = pd.Series(n_grams).value_counts().rename_axis(str(n) + "-grams").to_frame('frequency')
 
@@ -31,7 +31,13 @@ def get_rank_frequency(tokens, n):
 
     # plot rank frequency curve
     df_rank['rank'] = list(range(1, len(df_rank.index) + 1, 1))
-    df_rank.plot.line(x='rank', title=str(n) + "-grams")
+    plt.scatter(x = df_rank['rank'], y = df_rank['frequency'], marker='o', label = "Word frequency in Disney")
+    zipf_low = constant / df_rank['rank']
+    plt.plot(df_rank['rank'], zipf_low, label = "Zipf low", color = 'red')
+    plt.gca().set_yscale('log')
+    plt.gca().set_xscale('log')
+    plt.legend()
+    plt.title(str(n) + "-grams")
     plt.show()
 
 
@@ -46,8 +52,8 @@ def main():
     tokens = add_tokens(tokens, plots)
     tokens = clean_tokens(tokens)
 
-    get_rank_frequency(tokens, 1)
-    get_rank_frequency(tokens, 2)
+    get_rank_frequency(tokens, 1, constant = 800)
+    get_rank_frequency(tokens, 2, constant = 100)
 
     # Heaps’ Law for text in titel and plot columns
     dictionary = set()
@@ -64,10 +70,6 @@ def main():
     plt.plot(vocabulary_growth)
 
     plt.show()
-
-
-
-
 
 
 if __name__ == "__main__":
