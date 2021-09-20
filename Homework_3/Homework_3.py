@@ -4,6 +4,8 @@ from nltk.stem import WordNetLemmatizer
 from nltk.stem import PorterStemmer
 from nltk.tokenize import word_tokenize as Tokenizer
 
+import numpy as np
+
 stemmer = PorterStemmer()
 lemmatizer = WordNetLemmatizer()
 punctuation = '''!()-[]{};:'"\,<>./?@#$%^&*_~'''
@@ -47,10 +49,10 @@ for x in range (0, len(docs)):
         print("Lemmatized: ", lemmatized_word)
         print()
 
-        if stemmed_word not in index:
-            index[stemmed_word] = set() # Creates a set if nothing found
-        if stemmed_word in index:
-            index[stemmed_word].add(x+1) # Adds doc num if found
+        # if stemmed_word not in index:
+        #     index[stemmed_word] = set() # Creates a set if nothing found
+        # if stemmed_word in index:
+        #     index[stemmed_word].add(x+1) # Adds doc num if found
 
         if lemmatized_word not in index:
             index[lemmatized_word] = set() # Creates a set if nothing found
@@ -60,10 +62,18 @@ for x in range (0, len(docs)):
 # Print index
 print("----- INDEX -----")
 print("___________________________")
-for word in index:
+for word in sorted(index):
     print(f"{word}: {index[word]}")
 print("___________________________")
 
+
+# Create a term-document matrix
+term_doc_matrix = np.zeros((len(index), len(docs)), dtype=np.uint8)
+for idx, word in enumerate(sorted(index)):
+    term_doc_matrix[idx, [doc_id - 1 for doc_id in index[word]]] = 1
+
+# Create a term-term matrix
+term_term_matrix = np.matmul(term_doc_matrix, term_doc_matrix.transpose())
 
 
 
