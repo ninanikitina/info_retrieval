@@ -7,7 +7,7 @@ class QueryObj(object):
         self.timestamp = timestamp
 
     def print():
-        print(f"Query ID: {self.id} | Timestamp: {self.timestamp")
+        print(f"Query ID: {self.id} | Timestamp: {self.timestamp}")
         print(f"Query: {query}")
 
 
