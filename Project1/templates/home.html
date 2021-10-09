@@ -38,11 +38,17 @@
         </div>
         <div class="col-sm-4" style="background-color: lightsteelblue; border: 3px solid black; height: 450px;">
           <h3>QUERY RESULTS</h3>
-          <p id='qsearch1'>1: </p>
-          <p id='qsearch2'>2: </p>
-          <p id='qsearch3'>3: </p>
-          <p id='qsearch4'>4: </p>
-          <p id='qsearch5'>5: </p>
+          <ol type="1">
+            <li id='qsearch1'> </li>
+            <br>
+            <li id='qsearch2'> </li>
+            <br>
+            <li id='qsearch3'> </li>
+            <br>
+            <li id='qsearch4'> </li>
+            <br>
+            <li id='qsearch5'> </li>
+          </ol>
         </div>
       </div>
     </div>
@@ -79,7 +85,12 @@
         document.getElementById("pastq1").innerHTML = x
 
         // Todo: Return search results
-       
+        document.getElementById("qsearch1").innerHTML = "Looks like you searched for something!";
+        document.getElementById("qsearch2").innerHTML = "Looks like you searched for something!";
+        document.getElementById("qsearch3").innerHTML = "Looks like you searched for something!";
+        document.getElementById("qsearch4").innerHTML = "Looks like you searched for something!";
+        document.getElementById("qsearch5").innerHTML = "Looks like you searched for something!";
       }
     </script>
+
   </body>
