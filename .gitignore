@@ -2,7 +2,3 @@
 /shelf/
 /workspace.xml
 .idea/
-*.ftr
-*.pickle
-Project1/stanford/
-Project1/preprocessed_files/*

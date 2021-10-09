@@ -1,9 +1,10 @@
 import nltk
+from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from nltk.stem import PorterStemmer
 from nltk.tokenize import word_tokenize as Tokenizer
 import pandas as pd
-from nltk.corpus import stopwords
+
 import numpy as np
 
 stemmer = PorterStemmer()
