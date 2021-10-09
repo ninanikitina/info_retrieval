@@ -1,0 +1,85 @@
+<head>
+    <title>Search Engine - CS437</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  </head>
+  
+  <body style="background-color: rgb(240, 250, 241); "> 
+    <div class="jumbotron text-center" style="background-color: rgb(202, 245, 202); border-bottom: 3px solid black; margin-bottom: 3%;">
+      <h1>Brandon, Nina, And Stephanie's Amazing Search Engine!</h1>
+    </div>
+    <div class="container" style="background-color: lightsteelblue; border: 3px solid black;">
+      <div class="row">
+       <div class="col-sm-4" style="background-color: lightsteelblue; border: 3px solid black; height: 450px; text-align: center;">
+          <form>
+            <h3> Type your query here!</h3>
+            <hr style="background-color: black; color:black; height: 2px; border-top: 1px solid black;">
+            <label for="form-search"></label>
+            <input type="text" onkeyup="suggestions()" class="form-control" id="form-search" placeholder="Enter your query here">
+          </form>
+          <button type="button" onclick="querySearch()" class="btn" style="margin-left: auto; margin-right: auto;">Search Query!</button>
+          <hr style="background-color: black; color:black; height: 2px; border-top: 1px solid black;">
+          <div>
+            <h3>Maybe these suggestions may help?</h3>
+            <p id='querysug1' style="text-align: left;">1: </p>
+            <p id='querysug2' style="text-align: left;">2: </p>
+            <p id='querysug3' style="text-align: left;">3: </p>
+          </div>
+
+        </div>
+        <div class="col-sm-4" style="background-color: lightsteelblue; border: 3px solid black; height: 450px;">
+          <h3>PAST QUERIES </h3>
+          <ol type="1">
+            <li id='pastq1'> </li>
+            <li id='pastq2'> </li>
+            <li id='pastq3'> </li>
+            <li id='pastq4'> </li>
+            <li id='pastq5'> </li>
+          </ol>
+        </div>
+        <div class="col-sm-4" style="background-color: lightsteelblue; border: 3px solid black; height: 450px;">
+          <h3>QUERY RESULTS</h3>
+          <p id='qsearch1'>1: </p>
+          <p id='qsearch2'>2: </p>
+          <p id='qsearch3'>3: </p>
+          <p id='qsearch4'>4: </p>
+          <p id='qsearch5'>5: </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Handles Suggestions Javascript-->
+    <script>
+      function suggestions() {
+        var x = document.getElementById("form-search").value;
+        document.getElementById("querysug1").innerHTML = "1. " + x;
+        document.getElementById("querysug2").innerHTML = "2. " + x + (" Another one!");
+        document.getElementById("querysug3").innerHTML = "3. Another test " + x;
+        }
+    </script>
+  
+  <!-- Remove Enter button from refreshing page -->
+ <script>
+    document.getElementById('name').addEventListener('keypress', function(event) {
+        if (event.keyCode == 13) {
+            event.preventDefault();
+        }
+    });
+  </script>
+
+    <!-- Query Search JavaScript-->
+    <script>
+      function querySearch() {
+
+        // Updates Past Queries
+        var x = document.getElementById("form-search").value;
+        document.getElementById("pastq5").innerHTML = document.getElementById("pastq4").innerHTML;
+        document.getElementById("pastq4").innerHTML = document.getElementById("pastq3").innerHTML;
+        document.getElementById("pastq3").innerHTML = document.getElementById("pastq2").innerHTML
+        document.getElementById("pastq2").innerHTML = document.getElementById("pastq1").innerHTML
+        document.getElementById("pastq1").innerHTML = x
+
+        // Todo: Return search results
+       
+      }
+    </script>
+  </body>

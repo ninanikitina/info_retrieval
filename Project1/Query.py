@@ -5,7 +5,7 @@ class Query(object):
         self.id = id
         self.query = query
         self.timestamp = timestamp
-        self.keyword = query.split()[0]
+        self.keywords = query.split() # Could use updating
 
     def print(self):
         print(f"Query ID: {self.id} | Timestamp: {self.timestamp}")

@@ -41,7 +41,11 @@ class QueryHolder(object):
                 for query in query_words:
                     query = (Query(info[0], info[1], info[2]))
                     self.add_query(query)
-                
+
+
+     # def Save aol queries 
+     # def load aol queries
+     # return suggestions
 
 #####################
 # Used to run tests #

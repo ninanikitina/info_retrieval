@@ -4,7 +4,6 @@ from nltk.stem import WordNetLemmatizer
 from nltk.stem import PorterStemmer
 from nltk.tokenize import word_tokenize as Tokenizer
 import pandas as pd
-
 import numpy as np
 
 stemmer = PorterStemmer()
