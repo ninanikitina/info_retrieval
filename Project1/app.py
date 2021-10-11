@@ -1,10 +1,12 @@
 from flask import Flask
 from flask import render_template
 from flask import request
-from . import QueryLogger
+from flask_cors import CORS
+import QueryLogger
 
 app = Flask(__name__)
-queries = QueryLogger()
+CORS(app)
+queries = QueryLogger.QueryLogger()
 
 @app.route('/')
 def hello():
@@ -12,8 +14,7 @@ def hello():
 
 @app.route('/suggestions', methods=["POST"])
 def get_suggestions():
-    data = request.json
-    return queries.get_suggestions(data["query"])
+    return queries.get_suggestions(request.form["query"])
 
 @app.route('/search', methods=["POST"])
 def get_search_articles():

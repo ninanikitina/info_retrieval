@@ -20,11 +20,12 @@
           <hr style="background-color: black; color:black; height: 2px; border-top: 1px solid black;">
           <div>
             <h3>Maybe these suggestions may help?</h3>
-            <p id='querysug1' style="text-align: left;">1: </p>
-            <p id='querysug2' style="text-align: left;">2: </p>
-            <p id='querysug3' style="text-align: left;">3: </p>
+            <ol>
+              <li id='querysug1' style="text-align: left;"> </li>
+              <li id='querysug2' style="text-align: left;"> </li>
+              <li id='querysug3' style="text-align: left;"> </li>
+            </ol>
           </div>
-
         </div>
         <div class="col-sm-4" style="background-color: lightsteelblue; border: 3px solid black; height: 450px;">
           <h3>PAST QUERIES </h3>
@@ -56,16 +57,13 @@
     <!-- Handles Suggestions Javascript-->
     <script>
       function suggestions() {
-        var x = document.getElementById("form-search").value;
-        document.getElementById("querysug1").innerHTML = "1. " + x;
-        document.getElementById("querysug2").innerHTML = "2. " + x + (" Another one!");
-        document.getElementById("querysug3").innerHTML = "3. Another test " + x;
-        }
+        update_suggestions()
+       }
     </script>
   
   <!-- Remove Enter button from refreshing page -->
  <script>
-    document.getElementById('name').addEventListener('keypress', function(event) {
+    document.getElementById('form-search').addEventListener('keypress', function(event) {
         if (event.keyCode == 13) {
             event.preventDefault();
         }
@@ -91,6 +89,27 @@
         document.getElementById("qsearch4").innerHTML = "Looks like you searched for something!";
         document.getElementById("qsearch5").innerHTML = "Looks like you searched for something!";
       }
+    </script>
+
+    <script>
+      function update_suggestions() {
+        var query = document.getElementById("form-search").value;
+        var data = {
+          "query":query
+        }
+        const Url="localhost:5000/suggestions";
+        var xhr = new XMLHttpRequest();
+          xhr.open("POST", Url, true);
+          xhr.setRequestHeader('Content-Type', 'application/json');
+          xhr.send(data)
+          data = xhr.response
+          console.log(data)
+          document.getElementById("querysug1").innerHTML = data[0];
+          document.getElementById("querysug2").innerHTML = data[1];
+          document.getElementById("querysug3").innerHTML = data[2];
+        }
+
+
     </script>
 
   </body>

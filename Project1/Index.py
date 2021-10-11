@@ -3,6 +3,7 @@ import nltk
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize as Tokenizer
+import time
 
 class Index:
     def __init__(self):
@@ -12,6 +13,7 @@ class Index:
         self.lemmatizer = WordNetLemmatizer()
 
     def add_document(self, document, document_name = "unknown"):
+            start = time.time()
             document = document.lower()
             self.total_documents += 1
             if document_name == "unknown":
@@ -40,7 +42,9 @@ class Index:
                         self.index[lemmatized_word][document_name] = frequency+1
                    
                 
-                    
+            finish = time.time() - start  
+            print(f"{document_name} took {finish} amount of time to process")
+            
                   # Adds doc num if found
 
    
@@ -53,5 +57,6 @@ if __name__ == "__main__":
     index = Index()
     index.add_document("THIS IS A SILLY TEST OF MY INDEX! INDEX INDEX INDEX", document_name = "TEST INDEX")
     index.add_document("ANOTHER TEST INDEX DASDFK", document_name = "ANOTHER INDEX")
+    index.add_document("BLAH BLAH BLAH TEST INDEX ANOTHER ONE BRANDON TEST")
     
     index.print()

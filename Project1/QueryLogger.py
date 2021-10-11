@@ -60,9 +60,10 @@ class QueryLogger(object):
         best_queries = []
         good_queries = []
         for word in words:
-            related_queries = self.queries[word].values
-            for query in related_queries:
-                all_queries.append[query, self.queries[word][query]]
+            if word in self.queries:
+                related_queries = self.queries[word].values
+                for query in related_queries:
+                    all_queries.append[query, self.queries[word][query]]
         for query in all_queries:
             if all(word in query[0] for word in words):
                 best_queries.append(query)
@@ -71,10 +72,10 @@ class QueryLogger(object):
                     good_queries.append(query)
         if len(best_queries) > 0:
             best_queries.sort(reverse=True, key=lambda x:x[1])
-            return best_queries[:5]
+            return dict(best_queries[:3])
         else:
             good_queries.sort(reverse=True, key=lambda x:x[1])
-            return good_queries[:5]
+            return dict(good_queries[:3])
         
 
 
