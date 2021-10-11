@@ -22,10 +22,10 @@ class GenerateSnippets:
         #pickle.dump(termsList, f)
         #f.close()
 
-        f = open("C:\\Users\\steph\\source\\repos\\info_retrieval\\Project1\\myPickle", "rb")
+        f = open("myPickle", "rb")
         termsList = pickle.load(f)
         f.close()
-        f = open("C:\\Users\\steph\\source\\repos\\info_retrieval\\Project1\\docPickle", "rb")
+        f = open("docPickle", "rb")
         doc = pickle.load(f)
         f.close()
  
