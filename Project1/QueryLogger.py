@@ -1,5 +1,6 @@
 import os
 from Query import Query
+import json
 import nltk
 import nltk
 from nltk.corpus import stopwords
@@ -53,12 +54,30 @@ class QueryLogger(object):
         with open('query_log.json') as json_file:
             self.queries = json.load(json_file)
 
+    def get_suggestions(self, query):
+        words = query.split()
+        all_queries = []
+        best_queries = []
+        good_queries = []
+        for word in words:
+            related_queries = self.queries[word].values
+            for query in related_queries:
+                all_queries.append[query, self.queries[word][query]]
+        for query in all_queries:
+            if all(word in query[0] for word in words):
+                best_queries.append(query)
+            else:
+                if any(word in query[0] for word in words):
+                    good_queries.append(query)
+        if len(best_queries) > 0:
+            best_queries.sort(reverse=True, key=lambda x:x[1])
+            return best_queries[:5]
+        else:
+            good_queries.sort(reverse=True, key=lambda x:x[1])
+            return good_queries[:5]
+        
 
 
-
-     # def Save aol queries 
-     # def load aol queries
-     # return suggestions
 
 #####################
 # Used to run tests #
