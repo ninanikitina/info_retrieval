@@ -8,71 +8,59 @@ import pickle
 import math
 
 class GenerateSnippets:
-    def __init__(self):
-
-        #corpus_df_name = "C:\\Users\\steph\\source\\repos\\info_retrieval\\Project1\\preprocessed_files\\dataframe.ftr"
-        #tokenized_df_name = "C:\\Users\\steph\\source\\repos\\info_retrieval\\Project1\\preprocessed_files\\tokenized_dataframe.ftr"
+    def __init__(self, termsList, df):
+        self.termsList = termsList
+        self.df = df
         self.lemmatizer = WordNetLemmatizer()
-        
-#        self.a = pd.read_feather(tokenized_df_name, columns=None, use_threads=True)
-#        self.b = pd.read_feather(corpus_df_name, columns=None, use_threads=True)
 
-        #termsList = self.a['all_content'][0]
-        #f = open("C:\\Users\\steph\\source\\repos\\info_retrieval\\Project1\\myPickle", "wb")
-        #pickle.dump(termsList, f)
-        #f.close()
-
-        f = open("myPickle", "rb")
-        termsList = pickle.load(f)
-        f.close()
-        f = open("docPickle", "rb")
-        doc = pickle.load(f)
-        f.close()
- 
-        query = "Morocco is a place with relations"
-
-        title, one, two = self.getSnippets(query, doc, termsList)
-        print(title)
-        print(one)
-        print(two)
 
     
-    def getSnippets(self, query, document, termsList):
+    def getSnippets(self, query, document_ids):
         """ Gets top two top-ranked sentences of document related to query
         :based on cosine similarity iwth respect to q
         :uses TF-IDF for term weighting scheme
         :returns Title, top-ranked sentence, sencond top-ranked sentence
         """
-        sentDict = self.documentTFIDF(document, termsList)
-        queryDict = self.queryTFIDF(query, termsList)
-            
-        self.sentenceList = []
-        self.resultList = []
 
-        for s in sentDict:
-            x = self.cosine(queryDict[query], sentDict[s], termsList)
-            found = False
-            for inx,r in enumerate(self.resultList):
-                if x > r:
-                    self.resultList.insert(inx, x)
-                    self.sentenceList.insert(inx, s)
-                    found = True
-                    break
-            if not found:
-                self.resultList.append(x)
-                self.sentenceList.append(s)
-        return self.getTitle(), self.sentenceList[0], self.sentenceList[1]
+        snippets_df = pd.DataFrame(columns=["title", "one", "two"])
+
+        for id in document_ids:
+            selected_row = self.df[self.df["id"] == id]
+            title = selected_row["title"].to_list()[0]
+            document = selected_row["content"].to_list()[0]
+
+            sentDict = self.documentTFIDF(document)
+            queryDict = self.queryTFIDF(query)
+            sentenceList = []
+            resultList = []
+
+            for s in sentDict:
+                x = self.cosine(queryDict[query], sentDict[s], self.termsList)
+                found = False
+                for inx,r in enumerate(resultList):
+                    if x > r:
+                        resultList.insert(inx, x)
+                        sentenceList.insert(inx, s)
+                        found = True
+                        break
+                if not found:
+                    resultList.append(x)
+                    sentenceList.append(s)
+            dict = {"title": title, "one": sentenceList[0], "two": sentenceList[1]}
+            snippets_df = snippets_df.append(dict, ignore_index=True)
+
+        return snippets_df
 
 
-    def getFullSortedSentenceList(self):
-        return self.sentenceList
-    
-    def getFullSortedResultList(self):
-        return self.resultList
-
-    def getTitle(self):
-        return self.title
- 
+    # def getFullSortedSentenceList(self):
+    #     return self.sentenceList
+    #
+    # def getFullSortedResultList(self):
+    #     return self.resultList
+    #
+    # def getTitle(self):
+    #     return self.title
+    #
     def calculateDF(self, terms):
         """ Calculates DF for a list of terms
             :Takes in a list of terms 
@@ -103,11 +91,14 @@ class GenerateSnippets:
             prod.append(q * s)
             magQ.append(q**2)
             magS.append(s**2)
-        value = sum(prod) / (math.sqrt(sum(magQ)) * math.sqrt(sum(magS)))
+        if (math.sqrt(sum(magQ)) * math.sqrt(sum(magS))) != 0:
+            value = sum(prod) / (math.sqrt(sum(magQ)) * math.sqrt(sum(magS)))
+        else:
+            value = 0
         return value
 
        
-    def queryTFIDF(self, query, termsList):
+    def queryTFIDF(self, query):
         """ Calculates TF-IDF for each term in query
         :seperates the title from the contents    
         :takes the document contents and splits them into sentences
@@ -115,25 +106,24 @@ class GenerateSnippets:
         :there is only one query with multiple terms
         """
         sentencesList = [query]
-        return self.calculateTFIDF(sentencesList, termsList)
+        return self.calculateTFIDF(sentencesList)
 
 
 
-    def documentTFIDF(self, docContent, termsList):
+    def documentTFIDF(self, body):
         """ Calculates TF-IDF for each term in each sentence
         :seperates the title from the contents    
         :takes the document contents and splits them into sentences
         :returns dicionary of each sentence with dictionary of terms and TFIDF --> {'sentence': {'term': TFIDF}}
         """
-        dummies = docContent.split('\r\n\r\n')
-        self.title = dummies[0]
-        body = "".join(dummies[1:])
+        dummies = body.split('\r\n\r\n')
+        body = "".join(dummies)
         sentencesList = re.split('[.!?]', body)
         sentencesList = [x for x in sentencesList if len(x) > 0]
-        return self.calculateTFIDF(sentencesList, termsList)
+        return self.calculateTFIDF(sentencesList)
 
 
-    def calculateTFIDF(self, sList, termsList):
+    def calculateTFIDF(self, sList):
         """ Calculates TF-IDF for each sentence in sList
         :TF-IDF = (frequency(t,r) / total tokens in r) * (# of resources in the collection / # of resources in which t appears) 
         :for each sentence in sList, TF-IDF is calculated for each term in termsList
@@ -141,10 +131,10 @@ class GenerateSnippets:
         """
         docSent = {}
         numCollections = len(sList)
-        DF = self.calculateDF(termsList)
+        DF = self.calculateDF(self.termsList)
         for s in sList:
             TF_IDF = {}
-            TF = self.calculateTF(s, termsList)
+            TF = self.calculateTF(s, self.termsList)
             for key in DF:
                 TF_IDF.setdefault(key,0)
                 TF_IDF[key] = round(TF.get(key, 0) * (numCollections / DF[key]), 4)

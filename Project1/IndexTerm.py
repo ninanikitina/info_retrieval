@@ -21,6 +21,10 @@ class IndexTerm(object):
         self.doc_max_term = self._build_doc_max(tokenized_df)
         self.docs_num = len(tokenized_df.index)
 
+    def get_terms(self):
+        return self.term_freq.keys()
+
+
     def _build_index(self, tokenized_df):
         content = tokenized_df["all_content"].to_list()
         id = tokenized_df["id"].to_list()
