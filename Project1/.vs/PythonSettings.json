@@ -1,0 +1,4 @@
+{
+  "SuppressEnvironmentCreationPrompt": true,
+  "Interpreter": "Global|ContinuumAnalytics|Anaconda38-64"
+}

@@ -7,7 +7,7 @@
     <div class="jumbotron text-center" style="background-color: rgb(202, 245, 202); border-bottom: 3px solid black; margin-bottom: 3%;">
       <h1>Brandon, Nina, And Stephanie's Amazing Search Engine!</h1>
     </div>
-    <div class="container" style="background-color: lightsteelblue; border: 3px solid black;">
+    <div class="container" style="background-color: lightsteelblue; border: 3px solid black; margin-bottom: 50px;">
       <div class="row">
        <div class="col-sm-4" style="background-color: lightsteelblue; border: 3px solid black; height: 450px; text-align: center;">
           <form>
@@ -19,17 +19,8 @@
           <button type="button" onclick="querySearch()" class="btn" style="margin-left: auto; margin-right: auto;">Search Query!</button>
           <hr style="background-color: black; color:black; height: 2px; border-top: 1px solid black;">
           <div>
-            <h3>Maybe these suggestions may help?</h3>
-            <ol>
-              <li id='querysug1' style="text-align: left;"> </li>
-              <li id='querysug2' style="text-align: left;"> </li>
-              <li id='querysug3' style="text-align: left;"> </li>
-            </ol>
-          </div>
-        </div>
-        <div class="col-sm-4" style="background-color: lightsteelblue; border: 3px solid black; height: 450px;">
-          <h3>PAST QUERIES </h3>
-          <ol type="1">
+            <h3>PAST QUERIES</h3>
+          <ol style="text-align: left" type="1">
             <li id='pastq1'> </li>
             <li id='pastq2'> </li>
             <li id='pastq3'> </li>
@@ -37,8 +28,26 @@
             <li id='pastq5'> </li>
           </ol>
         </div>
+        </div>
         <div class="col-sm-4" style="background-color: lightsteelblue; border: 3px solid black; height: 450px;">
-          <h3>QUERY RESULTS</h3>
+          <h3 style="text-align: center;">SUGGESTIONS</h3>
+          <hr style="background-color: black; color:black; height: 2px; border-top: 1px solid black;">
+          <ol>
+            <li id='querysug1' style="text-align: left;"> </li>
+            <br>
+            <li id='querysug2' style="text-align: left;"> </li>
+            <br>
+            <li id='querysug3' style="text-align: left;"> </li>
+            <br>
+            <li id='querysug4' style="text-align: left;"> </li>
+            <br>
+            <li id='querysug5' style="text-align: left;"> </li>
+            <br>
+          </ol>
+        </div>
+        <div class="col-sm-4" style="background-color: lightsteelblue; border: 3px solid black; height: 450px;">
+          <h3 style="text-align: center;">QUERY RESULTS</h3>
+          <hr style="background-color: black; color:black; height: 2px; border-top: 1px solid black;">
           <ol type="1">
             <li id='qsearch1'> </li>
             <br>
@@ -91,22 +100,24 @@
       }
     </script>
 
+    <!-- Actually handles updating-->
     <script>
       function update_suggestions() {
         var query = document.getElementById("form-search").value;
-        var data = {
-          "query":query
-        }
-        const Url="localhost:5000/suggestions";
+        const Url="http://127.0.0.1:5000/suggestions";
         var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == XMLHttpRequest.DONE) {
+            document.getElementById("querysug1").innerHTML = xhr.responseText;
+            document.getElementById("querysug2").innerHTML = xhr.responseText;
+            document.getElementById("querysug3").innerHTML = xhr.responseText;
+            document.getElementById("querysug4").innerHTML = xhr.responseText;
+            document.getElementById("querysug5").innerHTML = xhr.responseText;
+            }
+          } 
           xhr.open("POST", Url, true);
           xhr.setRequestHeader('Content-Type', 'application/json');
-          xhr.send(data)
-          data = xhr.response
-          console.log(data)
-          document.getElementById("querysug1").innerHTML = data[0];
-          document.getElementById("querysug2").innerHTML = data[1];
-          document.getElementById("querysug3").innerHTML = data[2];
+          xhr.send(JSON.stringify({"query": query}));
         }
 
 

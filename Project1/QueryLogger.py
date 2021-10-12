@@ -1,11 +1,6 @@
 import os
 from Query import Query
 import json
-import nltk
-import nltk
-from nltk.corpus import stopwords
-from nltk.stem import WordNetLemmatizer
-from nltk.tokenize import word_tokenize as Tokenizer
 import StringPreprocessingFunctions
 
 class QueryLogger(object):
@@ -72,10 +67,10 @@ class QueryLogger(object):
                     good_queries.append(query)
         if len(best_queries) > 0:
             best_queries.sort(reverse=True, key=lambda x:x[1])
-            return dict(best_queries[:3])
+            return dict(best_queries[:5])
         else:
             good_queries.sort(reverse=True, key=lambda x:x[1])
-            return dict(good_queries[:3])
+            return dict(good_queries[:5])
         
 
 
