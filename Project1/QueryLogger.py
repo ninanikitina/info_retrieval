@@ -79,25 +79,34 @@ class QueryLogger(object):
 
                 # If we found high quality queries, return higher quality queries, else return the highest frequency searches based on the original query
         if len(best_queries) > 0:
-            print("Best queries: ", best_queries)
             best_queries.sort(reverse=True, key=tuple_sort)
+            best_queries = best_queries[:5]
             retVal = {}
             print("Best queries: ", best_queries)
-            retVal["Suggestions"] = json.dumps(best_queries[:5])
+            retVal["Suggestions"] = json.dumps(remove_tuples(best_queries))
             retVal["ResultLength"] = len(best_queries)
+            print(retVal)
             return retVal
         else:
-            print("Good queries: ", good_queries)
             good_queries.sort(reverse=True, key=tuple_sort)
+            good_queries = good_queries[:5]
             retVal = {}
             print("Good queries: ", good_queries)
-            retVal["Suggestions"] = json.dumps(good_queries[:5])
+            retVal["Suggestions"] = json.dumps(remove_tuples(good_queries))
             retVal["ResultLength"] = len(good_queries)
+            print(retVal)
             return retVal
         
 
 def tuple_sort(tuple):
     return tuple[1]
+
+def remove_tuples(tuple_list):
+    return_val = []
+    for tuple in tuple_list:
+        return_val.append(tuple[0])
+    return return_val
+        
 
 #####################
 # Used to run tests #

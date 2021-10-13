@@ -108,7 +108,9 @@
         var xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function() {
             if (xhr.readyState == XMLHttpRequest.DONE) {
-              var data = JSON.parse(xhr.responseText)
+            var data = JSON.parse(xhr.response)
+            console.log(xhr.response)
+            console.log(data)
             document.getElementById("querysug1").innerHTML = data.suggestions[0]
             document.getElementById("querysug2").innerHTML = data.suggestions[1];
             document.getElementById("querysug3").innerHTML = data.suggestions[2];
