@@ -83,8 +83,9 @@ class QueryLogger(object):
             best_queries = best_queries[:5]
             retVal = {}
             print("Best queries: ", best_queries)
-            retVal["Suggestions"] = json.dumps(remove_tuples(best_queries))
+            retVal["Suggestions"] = remove_tuples_and_jsonify(best_queries)
             retVal["ResultLength"] = len(best_queries)
+            retVal = json.dumps(retVal)
             print(retVal)
             return retVal
         else:
@@ -92,8 +93,9 @@ class QueryLogger(object):
             good_queries = good_queries[:5]
             retVal = {}
             print("Good queries: ", good_queries)
-            retVal["Suggestions"] = json.dumps(remove_tuples(good_queries))
+            retVal["Suggestions"] = remove_tuples_and_jsonify(good_queries)
             retVal["ResultLength"] = len(good_queries)
+            retVal = json.dumps(retVal)
             print(retVal)
             return retVal
         
@@ -101,10 +103,12 @@ class QueryLogger(object):
 def tuple_sort(tuple):
     return tuple[1]
 
-def remove_tuples(tuple_list):
-    return_val = []
+def remove_tuples_and_jsonify(tuple_list):
+    return_val = {}
+    counter = 0
     for tuple in tuple_list:
-        return_val.append(tuple[0])
+        return_val[counter] = tuple[0]
+        counter += 1
     return return_val
         
 
@@ -128,4 +132,3 @@ if __name__ == "__main__":
          keys = list(QueryLogger.queries[query].keys())
          for x in range(0, len(keys)):
             print(f"Query Word: {query} | Associated Query: {keys[x]} | Frequency: {values[x]}")
-

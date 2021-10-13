@@ -1,5 +1,4 @@
 from nltk.corpus import stopwords
-from nltk.stem import WordNetLemmatizer
 import string
 from nltk.tokenize import word_tokenize as Tokenizer
 
@@ -12,12 +11,7 @@ def preprocess_string(document):
                     word = word.replace(character, "")
 
     # Lemmatize Words
-    lemmed_words = []
-    lemmatizer = WordNetLemmatizer()
-    for word in document:
-        lemmed_words.append(lemmatizer.lemmatize(word).lower())
-
-    return lemmed_words
+    return document
 
 
 
