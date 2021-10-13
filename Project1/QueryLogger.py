@@ -5,7 +5,7 @@ import StringPreprocessingFunctions
 
 class QueryLogger(object):
     def __init__(self):
-        self.queries = {}
+        self.queries = self.load_queries()
         self.list_of_all_queries = []
 
     def add_query(self, query_obj): # Creates nested dictionary of a keyword + queries with that keyword
@@ -100,16 +100,18 @@ class QueryLogger(object):
 
 if __name__ == "__main__":
 
-    # Start tests
+     # Start tests
     print("|>>> Printing Tests <<<|")
     print("------------------------")
     print("---- Instantiate QueryHolder")
     QueryLogger = QueryLogger()
-    print("---- Add Query")
-    QueryLogger.add_query(Query(1, "This is a query"))
     print("---- Load AOL Queries")
-    QueryLogger.load_and_write_aol_queries()
+    QueryLogger.load_queries()
     print("---- Print Queries")
-    for query in QueryLogger.queries.keys:
-        print(f"{query} | QueryHolder.queries[query]")
+    queries = QueryLogger.queries.keys()
+    for query in queries:
+         values = list(QueryLogger.queries[query].values())
+         keys = list(QueryLogger.queries[query].keys())
+         for x in range(0, len(keys)):
+            print(f"Query Word: {query} | Associated Query: {keys[x]} | Frequency: {values[x]}")
 
