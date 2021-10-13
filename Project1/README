@@ -1,0 +1,17 @@
+### Instructions to Compile:
+
+#### Preperation
+1) Look at the requirements.txt and ensure all libraries are pip installed
+
+##### Easy Way:
+1) Open and run app.py
+2) Open up an internet browser and go to localhost:5000
+3) Use Search Engine =)
+
+
+###### From Command Line:
+1) Open command Line
+2) Find Project 1 Directory and go into directory 
+3) Enter the command: "python app.py"
+4) Open up an internet browser and go to localhost:5000
+5) Use search engine

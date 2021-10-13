@@ -5,24 +5,20 @@ import string
 from nltk.tokenize import word_tokenize as Tokenizer
 
 def preprocess_string(document):
-
+    document = [word for word in document if not word in stopwords.words()]
     # Remove Puntuation
-    for character in document:
+    for word in document:
+        for character in word:
                 if character in string.punctuation:
-                    document = document.replace(character, "")
-
-    # Tokenizes text and then removes stopwords
-    text_tokens = Tokenizer(document)
-    tokens_without_stopwords = [word for word in text_tokens if not word in stopwords.words()]
+                    word = word.replace(character, "")
 
     # Lemmatize Words
     lemmed_words = []
     lemmatizer = WordNetLemmatizer()
-    words = document.split()
-    for word in words:
+    for word in document:
         lemmed_words.append(lemmatizer.lemmatize(word))
 
-    return words
+    return lemmed_words
 
 
 
