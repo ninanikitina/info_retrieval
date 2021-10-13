@@ -8,12 +8,8 @@ class QueryLogger(object):
         self.queries = {}
         self.list_of_all_queries = []
 
-    def find_query(self, id):
-        for x in self.queries: # Search queries for one that starts with our position
-            if x.id == id:
-                return x
-
     def add_query(self, query_obj): # Creates nested dictionary of a keyword + queries with that keyword
+        self.list_of_all_queries.append(query_obj)
         for keyword in query_obj.keywords:
 
             if keyword not in self.queries: # Checks to see if query keyword exists and instantiates it if not
@@ -22,10 +18,13 @@ class QueryLogger(object):
             else:
                 if query_obj.query not in self.queries[keyword]: #Checks if the query has already been added and instantiating it if not
                     self.queries[keyword][query_obj.query] = 1
+                    
 
                 else: # If found, increment times queried
                     num_to_increment = self.queries[keyword][query_obj.query]
                     self.queries[keyword][query_obj.query] = num_to_increment + 1
+            with open("query_log.json", "w") as outfile:
+                json.dump(self.queries, outfile)
 
     def load_and_write_aol_queries(self): # Loads AOL Queries from our program and loads all queries
         for file in os.listdir(f"AOL-Query-Logs\\"):
@@ -46,31 +45,51 @@ class QueryLogger(object):
             json.dump(self.queries, outfile)
 
     def load_queries(self):
-        with open('query_log.json') as json_file:
-            self.queries = json.load(json_file)
+        try:
+            with open('query_log.json') as json_file:
+                self.queries = json.load(json_file)
+        except:
+            self.queries = {}
+
 
     def get_suggestions(self, query):
+        # Split query into individual words and perform string preprocessing
         words = query.split()
+        words = StringPreprocessingFunctions.preprocess_string(words)
         all_queries = []
         best_queries = []
         good_queries = []
+
+        # Go through each word in a query
         for word in words:
+            # Check the queries searched based on the weird
             if word in self.queries:
                 related_queries = self.queries[word].values
+                # Find all queries associated with that word
                 for query in related_queries:
                     all_queries.append[query, self.queries[word][query]]
+
+        # For each query, check if all query words are found in that query
         for query in all_queries:
             if all(word in query[0] for word in words):
                 best_queries.append(query)
             else:
                 if any(word in query[0] for word in words):
                     good_queries.append(query)
+
+        # If we found high quality queries, return higher quality queries, else return the highest frequency searches based on the original query
         if len(best_queries) > 0:
             best_queries.sort(reverse=True, key=lambda x:x[1])
-            return dict(best_queries[:5])
+            retVal = {}
+            retVal["Suggestions"] = json.dumps(best_queries[:5])
+            retVal["ResultLength"] = len(best_queries)
+            return retVal
         else:
-            good_queries.sort(reverse=True, key=lambda x:x[1])
-            return dict(good_queries[:5])
+            best_queries.sort(reverse=True, key=lambda x:x[1])
+            retVal = {}
+            retVal["Suggestions"] = json.dumps(good_queries[:5])
+            retVal["ResultLength"] = len(good_queries)
+            return retVal
         
 
 

@@ -7,7 +7,10 @@ import QueryLogger
 app = Flask(__name__)
 CORS(app)
 
+
 queries = QueryLogger.QueryLogger()
+queries.load_queries()
+
 
 @app.route('/')
 def hello():
@@ -15,14 +18,21 @@ def hello():
 
 @app.route('/suggestions', methods=["POST"])
 def get_suggestions():
-    print(request.json["query"])
     return queries.get_suggestions(request.json["query"])
+
+@app.route('/add_query', methods=["POST"])
+def add_query():
+    queries.add_query(request.json["query"])
 
 @app.route('/search', methods=["POST"])
 def get_search_articles():
-    pass
+    return main.run()
+
+
+
+
 
 if __name__ == "__main__":
-  print("Serving hosting via Waitress on port 5000")
+  print("Hosting via Waitress on localhost:5000")
   serve(app, listen='*:5000')
 
