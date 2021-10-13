@@ -163,11 +163,11 @@ class GenerateSnippets:
         sentence = self.removePunctuation(sentence)
         processed = sentence.split()
         processed = [word for word in processed if not word.isdigit()]
-        #temp= []
-        #for w in processed:
-        #    temp.append(self.lemmatizer.lemmatize(w))
+        temp = []
+        for w in processed:
+           temp.append(self.lemmatizer.lemmatize(w))
         processedList = []
-        for t in processed:
+        for t in temp:
             if t in termsList:
                 processedList.append(t)
         TF = self.calculateDF(processedList)
