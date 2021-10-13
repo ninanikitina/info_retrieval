@@ -64,10 +64,10 @@ class QueryLogger(object):
         for word in words:
             # Check the queries searched based on the weird
             if word in self.queries:
-                related_queries = self.queries[word].values
+                related_queries = self.queries[word].keys()
                 # Find all queries associated with that word
                 for query in related_queries:
-                    all_queries.append[query, self.queries[word][query]]
+                    all_queries.append((query, self.queries[word][query]))
 
         # For each query, check if all query words are found in that query
         for query in all_queries:
@@ -77,22 +77,27 @@ class QueryLogger(object):
                 if any(word in query[0] for word in words):
                     good_queries.append(query)
 
-        # If we found high quality queries, return higher quality queries, else return the highest frequency searches based on the original query
+                # If we found high quality queries, return higher quality queries, else return the highest frequency searches based on the original query
         if len(best_queries) > 0:
-            best_queries.sort(reverse=True, key=lambda x:x[1])
+            print("Best queries: ", best_queries)
+            best_queries.sort(reverse=True, key=tuple_sort)
             retVal = {}
+            print("Best queries: ", best_queries)
             retVal["Suggestions"] = json.dumps(best_queries[:5])
             retVal["ResultLength"] = len(best_queries)
             return retVal
         else:
-            best_queries.sort(reverse=True, key=lambda x:x[1])
+            print("Good queries: ", good_queries)
+            good_queries.sort(reverse=True, key=tuple_sort)
             retVal = {}
+            print("Good queries: ", good_queries)
             retVal["Suggestions"] = json.dumps(good_queries[:5])
             retVal["ResultLength"] = len(good_queries)
             return retVal
         
 
-
+def tuple_sort(tuple):
+    return tuple[1]
 
 #####################
 # Used to run tests #

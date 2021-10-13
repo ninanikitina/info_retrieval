@@ -108,11 +108,12 @@
         var xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function() {
             if (xhr.readyState == XMLHttpRequest.DONE) {
-            document.getElementById("querysug1").innerHTML = xhr.responseText;
-            document.getElementById("querysug2").innerHTML = xhr.responseText;
-            document.getElementById("querysug3").innerHTML = xhr.responseText;
-            document.getElementById("querysug4").innerHTML = xhr.responseText;
-            document.getElementById("querysug5").innerHTML = xhr.responseText;
+              var data = JSON.parse(xhr.responseText)
+            document.getElementById("querysug1").innerHTML = data.suggestions[0]
+            document.getElementById("querysug2").innerHTML = data.suggestions[1];
+            document.getElementById("querysug3").innerHTML = data.suggestions[2];
+            document.getElementById("querysug4").innerHTML = data.suggestions[3];
+            document.getElementById("querysug5").innerHTML = data.suggestions[4];
             }
           } 
           xhr.open("POST", Url, true);

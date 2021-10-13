@@ -1,4 +1,3 @@
-import nltk
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 import string
@@ -16,7 +15,7 @@ def preprocess_string(document):
     lemmed_words = []
     lemmatizer = WordNetLemmatizer()
     for word in document:
-        lemmed_words.append(lemmatizer.lemmatize(word))
+        lemmed_words.append(lemmatizer.lemmatize(word).lower())
 
     return lemmed_words
 
