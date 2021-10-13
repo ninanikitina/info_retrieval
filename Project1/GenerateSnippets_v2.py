@@ -4,6 +4,7 @@ from nltk.tokenize import word_tokenize
 from nltk.probability import FreqDist
 import re
 from nltk.stem import WordNetLemmatizer
+from nltk.tokenize import sent_tokenize
 import pickle
 import math
 
@@ -13,6 +14,15 @@ class GenerateSnippets:
         self.df = df
         self.lemmatizer = WordNetLemmatizer()
 
+
+    def getTermsForId(self,id):
+        localTerms = []
+        for term in self.termsList.keys():
+            ids_in_term = self.termsList[term].keys()
+            if id in ids_in_term and term not in localTerms:
+                localTerms.append(term)
+        print("Local terms: %s" % localTerms)
+        return localTerms
 
     
     def getSnippets(self, query, document_ids):
@@ -28,7 +38,8 @@ class GenerateSnippets:
             selected_row = self.df[self.df["id"] == id]
             title = selected_row["title"].to_list()[0]
             document = selected_row["content"].to_list()[0]
-
+            print("Contents: %s" % document)
+            #localTerms = self.getTermsForId(id)
             sentDict = self.documentTFIDF(document)
             queryDict = self.queryTFIDF(query)
             sentenceList = []
@@ -36,6 +47,7 @@ class GenerateSnippets:
 
             for s in sentDict:
                 x = self.cosine(queryDict[query], sentDict[s], self.termsList)
+                #x = self.cosine(queryDict[query], sentDict[s], localTerms)
                 found = False
                 for inx,r in enumerate(resultList):
                     if x > r:
@@ -47,6 +59,7 @@ class GenerateSnippets:
                     resultList.append(x)
                     sentenceList.append(s)
             dict = {"title": title, "one": sentenceList[0], "two": sentenceList[1]}
+            print(dict)
             snippets_df = snippets_df.append(dict, ignore_index=True)
 
         return snippets_df
@@ -117,8 +130,8 @@ class GenerateSnippets:
         :returns dicionary of each sentence with dictionary of terms and TFIDF --> {'sentence': {'term': TFIDF}}
         """
         dummies = body.split('\r\n\r\n')
-        body = "".join(dummies)
-        sentencesList = re.split('[.!?]', body)
+        body = " ".join(dummies)
+        sentencesList = sent_tokenize(body)
         sentencesList = [x for x in sentencesList if len(x) > 0]
         return self.calculateTFIDF(sentencesList)
 
@@ -178,7 +191,16 @@ class GenerateSnippets:
         
 
 if __name__ == "__main__":
-    gs = GenerateSnippets()
+    myp = "C:\\Users\\steph\\source\\repos\\info_retrieval\\Project1\\"
+    index_file_name = myp +"preprocessed_files\\wiki_index.pickle"  # TODO: Download file from google drive and move to the preprocessed_files folder in the Project1 directory
+    corpus_df_name = myp +"preprocessed_files\\wiki_df.ftr"  
+
+    with open(index_file_name, 'rb') as handle:
+        index = pickle.load(handle)
+    df = pd.read_feather(corpus_df_name, columns=None, use_threads=True)
+    #gs = GenerateSnippets(index.term_freq, df)
+    gs = GenerateSnippets(index.get_terms(), df)
+    gs.getSnippets("shiite",[1])
 
 
 
