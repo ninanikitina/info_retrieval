@@ -214,26 +214,27 @@ def tokanize_corpus(df, lower, remove_digits, is_lemmatized, remove_stop_words, 
 
 
 def main():
-    read_new_corpus = True  # False saves 20 sec for wiki collection. True if csv file should be read to create a data base, False if previously created data frame should be download
-    tokenize_new_corpus = True  # False saves 10 hours for wiki collection. True if need to preprocess new text corpus. Preprocessing takes from 10 to 12 hours
-    create_new_dictionary = True  # False saves 10 seconds for wiki collection.
-    clean_tokenized_corpus = True
+    read_new_corpus = False  # False saves 20 sec for wiki collection. True if csv file should be read to create a data base, False if previously created data frame should be download
+    tokenize_new_corpus = False  # False saves 10 hours for wiki collection. True if need to preprocess new text corpus. Preprocessing takes from 10 to 12 hours
+    create_new_dictionary = False  # False saves 10 seconds for wiki collection.
+    clean_tokenized_corpus = False
+    myPath = "C:\\Users\\steph\\source\\repos\\info_retrieval\\Project1\\"
 
     # Disney collection for fast tests
-    corp_file_nme = "preprocessed_files/disney_plus_shows.csv"
-    dictionary_file_name = "preprocessed_files/disney_dictionary.pickle"
-    corpus_df_name = "preprocessed_files/disney_dataframe.ftr"
-    tokenized_df_name = "preprocessed_files/disney_tokenized_dataframe.ftr"
-    tokenized_clean_df_name = "preprocessed_files/disney_tokenized_clean_df.ftr"
-    index_file_name = "preprocessed_files/disney_index.pickle"
+    #corp_file_nme = "preprocessed_files/disney_plus_shows.csv"
+    #dictionary_file_name = "preprocessed_files/disney_dictionary.pickle"
+    #corpus_df_name = "preprocessed_files/disney_dataframe.ftr"
+    #tokenized_df_name = "preprocessed_files/disney_tokenized_dataframe.ftr"
+    #tokenized_clean_df_name = "preprocessed_files/disney_tokenized_clean_df.ftr"
+    #index_file_name = "preprocessed_files/disney_index.pickle"
 
     # Wiki collection for main project
-    # corp_file_nme = "preprocessed_files/project_1_Wiki_sample.csv"
-    # dictionary_file_name = "preprocessed_files/wiki_dictionary.pickle"
-    # corpus_df_name = "preprocessed_files/wiki_df.ftr"
-    # tokenized_df_name = "preprocessed_files/wiki_tokenized_df.ftr"
-    # tokenized_clean_df_name = "preprocessed_files/wiki_tokenized_clean_df.ftr"
-    # index_file_name = "preprocessed_files/wiki_index.pickle"
+    corp_file_nme = myPath + "preprocessed_files\\project_1_Wiki_sample.csv"
+    dictionary_file_name = myPath +  "preprocessed_files\\wiki_dictionary.pickle"
+    corpus_df_name = myPath + "preprocessed_files\\wiki_df.ftr"
+    tokenized_df_name = myPath + "preprocessed_files\\wiki_tokenized_df.ftr"
+    tokenized_clean_df_name = myPath + "preprocessed_files\\wiki_tokenized_clean_df.ftr"
+    index_file_name = myPath + "preprocessed_files\\wiki_index.pickle"
 
 
     df = None

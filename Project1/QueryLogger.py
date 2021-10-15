@@ -5,7 +5,7 @@ import StringPreprocessingFunctions
 
 class QueryLogger(object):
     def __init__(self):
-        self.queries = {}
+        self.queries = self.load_queries()
         self.list_of_all_queries = []
 
     def add_query(self, query_obj): # Creates nested dictionary of a keyword + queries with that keyword
@@ -64,10 +64,10 @@ class QueryLogger(object):
         for word in words:
             # Check the queries searched based on the weird
             if word in self.queries:
-                related_queries = self.queries[word].values
+                related_queries = self.queries[word].keys()
                 # Find all queries associated with that word
                 for query in related_queries:
-                    all_queries.append[query, self.queries[word][query]]
+                    all_queries.append((query, self.queries[word][query]))
 
         # For each query, check if all query words are found in that query
         for query in all_queries:
@@ -77,22 +77,40 @@ class QueryLogger(object):
                 if any(word in query[0] for word in words):
                     good_queries.append(query)
 
-        # If we found high quality queries, return higher quality queries, else return the highest frequency searches based on the original query
+                # If we found high quality queries, return higher quality queries, else return the highest frequency searches based on the original query
         if len(best_queries) > 0:
-            best_queries.sort(reverse=True, key=lambda x:x[1])
+            best_queries.sort(reverse=True, key=tuple_sort)
+            best_queries = best_queries[:5]
             retVal = {}
-            retVal["Suggestions"] = json.dumps(best_queries[:5])
+            print("Best queries: ", best_queries)
+            retVal["Suggestions"] = remove_tuples_and_jsonify(best_queries)
             retVal["ResultLength"] = len(best_queries)
+            retVal = json.dumps(retVal)
+            print(retVal)
             return retVal
         else:
-            best_queries.sort(reverse=True, key=lambda x:x[1])
+            good_queries.sort(reverse=True, key=tuple_sort)
+            good_queries = good_queries[:5]
             retVal = {}
-            retVal["Suggestions"] = json.dumps(good_queries[:5])
+            print("Good queries: ", good_queries)
+            retVal["Suggestions"] = remove_tuples_and_jsonify(good_queries)
             retVal["ResultLength"] = len(good_queries)
+            retVal = json.dumps(retVal)
+            print(retVal)
             return retVal
         
 
+def tuple_sort(tuple):
+    return tuple[1]
 
+def remove_tuples_and_jsonify(tuple_list):
+    return_val = {}
+    counter = 0
+    for tuple in tuple_list:
+        return_val[counter] = tuple[0]
+        counter += 1
+    return return_val
+        
 
 #####################
 # Used to run tests #
@@ -100,16 +118,17 @@ class QueryLogger(object):
 
 if __name__ == "__main__":
 
-    # Start tests
+     # Start tests
     print("|>>> Printing Tests <<<|")
     print("------------------------")
     print("---- Instantiate QueryHolder")
     QueryLogger = QueryLogger()
-    print("---- Add Query")
-    QueryLogger.add_query(Query(1, "This is a query"))
     print("---- Load AOL Queries")
-    QueryLogger.load_and_write_aol_queries()
+    QueryLogger.load_queries()
     print("---- Print Queries")
-    for query in QueryLogger.queries.keys:
-        print(f"{query} | QueryHolder.queries[query]")
-
+    queries = QueryLogger.queries.keys()
+    for query in queries:
+         values = list(QueryLogger.queries[query].values())
+         keys = list(QueryLogger.queries[query].keys())
+         for x in range(0, len(keys)):
+            print(f"Query Word: {query} | Associated Query: {keys[x]} | Frequency: {values[x]}")

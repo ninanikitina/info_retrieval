@@ -15,9 +15,14 @@ class SearchEngineData():
         if query_sent == "No query submitted":
             return "No query submitted"
         print("Uploading data...")
-        corpus_df_name = "preprocessed_files/wiki_df.ftr"         # TODO: https://drive.google.com/drive/folders/1rSeosE42x1R4yW014VgmFhJGA5Yj8qOr?usp=sharing
-        index_file_name = "preprocessed_files/wiki_index.pickle"  # TODO: Download file from google drive and move to the preprocessed_files folder in the Project1 directory
-        results_file_name = "preprocessed_files/rank.csv"
+        myp = "C:\\Users\\steph\\source\\repos\\info_retrieval\\Project1\\"
+        corpus_df_name = myp + "preprocessed_files\\wiki_df.ftr"
+        index_file_name = myp + "preprocessed_files\\wiki_index.pickle"
+        results_file_name = myp + "preprocessed_files\\rank.csv"
+
+        #corpus_df_name = "preprocessed_files/wiki_df.ftr"         # TODO: https://drive.google.com/drive/folders/1rSeosE42x1R4yW014VgmFhJGA5Yj8qOr?usp=sharing
+        #index_file_name = "preprocessed_files/wiki_index.pickle"  # TODO: Download file from google drive and move to the preprocessed_files folder in the Project1 directory
+        #results_file_name = "preprocessed_files/rank.csv"
 
         with open(index_file_name, 'rb') as handle:
             index = pickle.load(handle)
