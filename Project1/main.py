@@ -27,9 +27,9 @@ class SearchEngineData():
         #index_file_name = myp + "preprocessed_files\\wiki_index.pickle"
         #results_file_name = myp + "preprocessed_files\\rank.csv"
 
-        corpus_df_name = "preprocessed_files/wiki_df.ftr"         # TODO: https://drive.google.com/drive/folders/1rSeosE42x1R4yW014VgmFhJGA5Yj8qOr?usp=sharing
-        index_file_name = "preprocessed_files/wiki_index.pickle"  # TODO: Download file from google drive and move to the preprocessed_files folder in the Project1 directory
-        results_file_name = "preprocessed_files/rank.csv"
+        corpus_df_name = "wiki_df.ftr"         # TODO: https://drive.google.com/drive/folders/1rSeosE42x1R4yW014VgmFhJGA5Yj8qOr?usp=sharing
+        index_file_name = "wiki_index.pickle"  # TODO: Download file from google drive and move to the preprocessed_files folder in the Project1 directory
+        results_file_name = "rank.csv"
 
         with open(index_file_name, 'rb') as handle:
             index = pickle.load(handle)

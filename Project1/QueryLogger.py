@@ -8,7 +8,8 @@ class QueryLogger(object):
         self.queries = self.load_queries()
         self.list_of_all_queries = []
 
-    def add_query(self, query_obj): # Creates nested dictionary of a keyword + queries with that keyword
+    def add_query(self, query): # Creates nested dictionary of a keyword + queries with that keyword
+        query_obj = Query(len(self.list_of_all_queries), query)
         self.list_of_all_queries.append(query_obj)
         for keyword in query_obj.keywords:
 
@@ -23,8 +24,6 @@ class QueryLogger(object):
                 else: # If found, increment times queried
                     num_to_increment = self.queries[keyword][query_obj.query]
                     self.queries[keyword][query_obj.query] = num_to_increment + 1
-            with open("query_log.json", "w") as outfile:
-                json.dump(self.queries, outfile)
 
     def load_and_write_aol_queries(self): # Loads AOL Queries from our program and loads all queries
         for file in os.listdir(f"AOL-Query-Logs\\"):
@@ -45,11 +44,9 @@ class QueryLogger(object):
             json.dump(self.queries, outfile)
 
     def load_queries(self):
-        try:
-            with open('query_log.json') as json_file:
-                self.queries = json.load(json_file)
-        except:
-            self.queries = {}
+        with open('query_log.json') as json_file:
+             self.queries = json.load(json_file)
+
 
 
     def get_suggestions(self, query):
