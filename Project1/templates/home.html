@@ -7,9 +7,10 @@
     <div class="jumbotron text-center" style="background-color: rgb(202, 245, 202); border-bottom: 3px solid black; margin-bottom: 3%;">
       <h1>Brandon, Nina, And Stephanie's Amazing Search Engine!</h1>
     </div>
-    <div class="container" style="background-color: lightsteelblue; border: 3px solid black; margin-bottom: 50px;">
+      <h3 id="search-bar" style="text-align:center"></h3>
+    <div class="container" style="background-color: lightsteelblue; border: 3px solid black; margin-bottom: 50px; height: 75%;">
       <div class="row">
-       <div class="col-sm-4" style="background-color: lightsteelblue; border: 3px solid black; height: 450px; text-align: center;">
+       <div class="col-sm-4" style="background-color: lightsteelblue; border: 3px solid black; height: 100%; text-align: center;">
           <form>
             <h3> Type your query here!</h3>
             <hr style="background-color: black; color:black; height: 2px; border-top: 1px solid black;">
@@ -29,7 +30,7 @@
           </ol>
         </div>
         </div>
-        <div class="col-sm-4" style="background-color: lightsteelblue; border: 3px solid black; height: 450px;">
+        <div class="col-sm-4" style="background-color: lightsteelblue; border: 3px solid black; height: 100%;">
           <h3 style="text-align: center;">SUGGESTIONS</h3>
           <hr style="background-color: black; color:black; height: 2px; border-top: 1px solid black;">
           <ol>
@@ -45,19 +46,28 @@
             <br>
           </ol>
         </div>
-        <div class="col-sm-4" style="background-color: lightsteelblue; border: 3px solid black; height: 450px;">
+        <div class="col-sm-4" style="background-color: lightsteelblue; border: 3px solid black; height: 100%;">
           <h3 style="text-align: center;">QUERY RESULTS</h3>
           <hr style="background-color: black; color:black; height: 2px; border-top: 1px solid black;">
           <ol type="1">
-            <li id='qsearch1'> </li>
-            <br>
-            <li id='qsearch2'> </li>
-            <br>
-            <li id='qsearch3'> </li>
-            <br>
-            <li id='qsearch4'> </li>
-            <br>
-            <li id='qsearch5'> </li>
+            <li> 
+              <h4 id='qsearch1Title'> </h4>
+              <p id='qsearch1Snip1'> </p>
+            </li>
+            <li> 
+              <h4 id='qsearch2Title'> </h4>
+              <p id='qsearch2Snip1'> </p>
+             </li>
+            <li> 
+              <h4 id='qsearch3Title'> </h4>
+              <p id='qsearch3Snip1'> </p>
+           </li>
+            <li> <h4 id='qsearch4Title'> </h4>
+              <p id='qsearch4Snip1'> </p>
+              </li>
+            <li> <h4 id='qsearch5Title'> </h4>
+              <p id='qsearch5Snip1'> </p>
+              </li>
           </ol>
         </div>
       </div>
@@ -91,13 +101,36 @@
         document.getElementById("pastq2").innerHTML = document.getElementById("pastq1").innerHTML
         document.getElementById("pastq1").innerHTML = x
 
-        // Todo: Return search results
-        document.getElementById("qsearch1").innerHTML = "Looks like you searched for something!";
-        document.getElementById("qsearch2").innerHTML = "Looks like you searched for something!";
-        document.getElementById("qsearch3").innerHTML = "Looks like you searched for something!";
-        document.getElementById("qsearch4").innerHTML = "Looks like you searched for something!";
-        document.getElementById("qsearch5").innerHTML = "Looks like you searched for something!";
-      }
+        var query = document.getElementById("form-search").value;
+        const Url="http://127.0.0.1:5000/search";
+          var xhr = new XMLHttpRequest();
+        document.getElementById("search-bar").innerHTML = "Searching..."
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == XMLHttpRequest.DONE) {
+            var data = JSON.parse(xhr.response)
+            console.log(xhr.response)
+            console.log(data)
+            document.getElementById("qsearch1Title").innerHTML = data[0].title
+            document.getElementById("qsearch1Snip1").innerHTML = data[0].one + " " + data[0].two
+
+            document.getElementById("qsearch2Title").innerHTML = data[1].title
+            document.getElementById("qsearch2Snip1").innerHTML = data[1].one + " " + data[1].two
+
+            document.getElementById("qsearch3Title").innerHTML = data[2].title
+            document.getElementById("qsearch3Snip1").innerHTML = data[2].one + " " + data[2].two
+
+            document.getElementById("qsearch4Title").innerHTML = data[3].title
+            document.getElementById("qsearch4Snip1").innerHTML = data[3].one + " " +data[3].two
+
+            document.getElementById("qsearch5Title").innerHTML = data[4].title
+            document.getElementById("qsearch5Snip1").innerHTML = data[4].one + " " + data[4].two
+            document.getElementById("search-bar").innerHTML = ""
+            }
+          } 
+          xhr.open("POST", Url, true);
+          xhr.setRequestHeader('Content-Type', 'application/json');
+          xhr.send(JSON.stringify({"query": query}));
+        }
     </script>
 
     <!-- Actually handles updating-->
@@ -111,6 +144,31 @@
             var data = JSON.parse(xhr.response)
             console.log(xhr.response)
             console.log(data)
+            if (data.Suggestions[0]) {
+                document.getElementById("querysug1").innerHTML = data.Suggestions[0];
+            } else {
+                document.getElementById("querysug1").innerHTML = "No more suggestions";
+                }
+            if (data.Suggestions[1]) {
+                document.getElementById("querysug2").innerHTML = data.Suggestions[1];
+            } else {
+                document.getElementById("querysug2").innerHTML = "No more suggestions";
+            }
+            if (data.Suggestions[2]) {
+                document.getElementById("querysug3").innerHTML = data.Suggestions[2];
+            } else {
+                document.getElementById("querysug3").innerHTML = "No more suggestions";
+            }
+            if (data.Suggestions[3]) {
+                document.getElementById("querysug4").innerHTML = data.Suggestions[3];
+            } else {
+                document.getElementById("querysug4").innerHTML = "No more suggestions";
+            }
+            if (data.Suggestions[4]) {
+                document.getElementById("querysug5").innerHTML = data.Suggestions[5];
+            } else {
+                document.getElementById("querysug5").innerHTML = "No more suggestions";
+            }
             document.getElementById("querysug1").innerHTML = data.Suggestions[0];
             document.getElementById("querysug2").innerHTML = data.Suggestions[1];
             document.getElementById("querysug3").innerHTML = data.Suggestions[2];
@@ -120,7 +178,7 @@
           } 
           xhr.open("POST", Url, true);
           xhr.setRequestHeader('Content-Type', 'application/json');
-          xhr.send(JSON.stringify({"query": query}));
+          xhr.send(JSON.stringify({"query": query.toLowerCase()}));
         }
 
 

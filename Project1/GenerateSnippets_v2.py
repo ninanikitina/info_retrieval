@@ -21,7 +21,6 @@ class GenerateSnippets:
             ids_in_term = self.termsList[term].keys()
             if id in ids_in_term and term not in localTerms:
                 localTerms.append(term)
-        print("Local terms: %s" % localTerms)
         return localTerms
 
     
@@ -33,12 +32,13 @@ class GenerateSnippets:
         """
 
         snippets_df = pd.DataFrame(columns=["title", "one", "two"])
+        doc_dict = {}
+        docNum = 0
 
         for id in document_ids:
             selected_row = self.df[self.df["id"] == id]
             title = selected_row["title"].to_list()[0]
             document = selected_row["content"].to_list()[0]
-            print("Contents: %s" % document)
             #localTerms = self.getTermsForId(id)
             sentDict = self.documentTFIDF(document)
             queryDict = self.queryTFIDF(query)
@@ -58,11 +58,21 @@ class GenerateSnippets:
                 if not found:
                     resultList.append(x)
                     sentenceList.append(s)
-            dict = {"title": title, "one": sentenceList[0], "two": sentenceList[1]}
-            print(dict)
-            snippets_df = snippets_df.append(dict, ignore_index=True)
+            snippet_one = ""
+            snippet_two = ""
 
-        return snippets_df
+            if index_check(sentenceList, 0):
+                snippet_one = sentenceList[0]
+            
+            if index_check(sentenceList, 1):
+                snippet_two = sentenceList[1]
+        
+            dict = {"title": title, "one": snippet_one, "two": snippet_two}
+            doc_dict[docNum] = dict
+            docNum += 1
+            #snippets_df = snippets_df.append(dict, ignore_index=True)
+
+        return doc_dict
 
 
     # def getFullSortedSentenceList(self):
@@ -163,6 +173,10 @@ class GenerateSnippets:
         for i in punc:
             sentence = sentence.replace(i , "")
         return sentence
+
+
+
+
             
     def calculateTF(self, sentence, termsList):
         """ Calculates TF each term in a sentence
@@ -188,7 +202,12 @@ class GenerateSnippets:
         for term in processedList:
             TF[term] = round((TF[term] / numTerms), 4)
         return TF
-        
+
+def index_check(list, index):
+    if (index < len(list)):
+        return True
+    else:
+        return False        
 
 if __name__ == "__main__":
     myp = "C:\\Users\\steph\\source\\repos\\info_retrieval\\Project1\\"

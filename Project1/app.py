@@ -9,23 +9,23 @@ app = Flask(__name__)
 CORS(app)
 
 data = main.SearchEngineData()
-data.query_logger.load_queries()
+
 
 
 @app.route('/')
 def hello():
+    data.query_logger.load_queries()
     return render_template('home.html')
 
 @app.route('/suggestions', methods=["POST"])
 def get_suggestions():
     return data.query_logger.get_suggestions(request.json["query"])
 
-@app.route('/add_query', methods=["POST"])
-def add_query():
-    data.query_logger.add_query(request.json["query"])
-
 @app.route('/search', methods=["POST"])
 def get_search_articles():
+    print(f"Searching documents in regard to: {request.json['query']}")
+    print(f"Be patient as we search for your documents.")
+    data.query_logger.add_query(request.json["query"])
     return data.run_query(request.json["query"])
 
 if __name__ == "__main__":

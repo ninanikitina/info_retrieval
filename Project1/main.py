@@ -1,9 +1,13 @@
 import time
 import pickle
 import pandas as pd
-from Project1.preprocessing import tokanize_text
-from Project1.GenerateSnippets_v2 import GenerateSnippets
-from Project1.QueryLogger import QueryLogger
+import json
+#from Project1.preprocessing import tokanize_text
+#from Project1.GenerateSnippets_v2 import GenerateSnippets
+#from Project1.QueryLogger import QueryLogger
+from preprocessing import tokanize_text
+from GenerateSnippets_v2 import GenerateSnippets
+from QueryLogger import QueryLogger
 
 
 class SearchEngineData():
@@ -16,13 +20,20 @@ class SearchEngineData():
             return "No query submitted"
         print("Uploading data...")
         myp = ""
-        corpus_df_name = myp + "preprocessed_files\\wiki_df.ftr"
-        index_file_name = myp + "preprocessed_files\\wiki_index.pickle"
-        results_file_name = myp + "preprocessed_files\\rank.csv"
 
         # corpus_df_name = "preprocessed_files/wiki_df.ftr"         # TODO: https://drive.google.com/drive/folders/1rSeosE42x1R4yW014VgmFhJGA5Yj8qOr?usp=sharing
         # index_file_name = "preprocessed_files/wiki_index.pickle"  # TODO: Download file from google drive and move to the preprocessed_files folder in the Project1 directory
         # results_file_name = "preprocessed_files/rank.csv"
+
+        ## Stephs filepaths
+        #myp = "C:\\Users\\steph\\source\\repos\\info_retrieval\\Project1\\"
+        #corpus_df_name = myp + "preprocessed_files\\wiki_df.ftr"
+        #index_file_name = myp + "preprocessed_files\\wiki_index.pickle"
+        #results_file_name = myp + "preprocessed_files\\rank.csv"
+
+        corpus_df_name = "wiki_df.ftr"         # TODO: https://drive.google.com/drive/folders/1rSeosE42x1R4yW014VgmFhJGA5Yj8qOr?usp=sharing
+        index_file_name = "wiki_index.pickle"  # TODO: Download file from google drive and move to the preprocessed_files folder in the Project1 directory
+        results_file_name = "rank.csv"
 
         with open(index_file_name, 'rb') as handle:
             index = pickle.load(handle)
@@ -39,9 +50,13 @@ class SearchEngineData():
         print("Generating snippets...")
         snippet_obj = GenerateSnippets(index.get_terms(), df)
         snippets_df = snippet_obj.getSnippets(query_sent, rank)
-        snippets_df.to_csv(results_file_name)
+        #snippets_df.to_csv(results_file_name)
 
-        print(snippets_df)
+        snippets_json = json.dumps(snippets_df, indent = 4)
+
+        print(snippets_json)
+
+        return snippets_json
 
 
 def main():
