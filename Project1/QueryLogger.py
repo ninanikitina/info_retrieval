@@ -2,14 +2,17 @@ import os
 from Query import Query
 import json
 import StringPreprocessingFunctions
+import time
 
 class QueryLogger(object):
     def __init__(self):
         self.queries = self.load_queries()
         self.list_of_all_queries = []
 
-    def add_query(self, query): # Creates nested dictionary of a keyword + queries with that keyword
-        query_obj = Query(len(self.list_of_all_queries), query)
+    def add_query(self, query, id=-124, datetime=time.time()): # Creates nested dictionary of a keyword + queries with that keyword
+        if id == -124:
+            id = len(self.list_of_all_queries)
+        query_obj = Query(id, query, datetime)
         self.list_of_all_queries.append(query_obj)
         for keyword in query_obj.keywords:
 
@@ -35,13 +38,10 @@ class QueryLogger(object):
                 line = line.replace("\n", "")
                 info = line.split("\t") # Splits into info[0] = ID, info[1] = query, info[2] = datetime object
                 self.list_of_all_queries.append(info[1])
-                query_words = StringPreprocessingFunctions.preprocess_string(info[1])
-                for query in query_words:
-                    query = (Query(info[0], info[1], info[2]))
-                    self.add_query(query)
+                self.add_query(info[1], id = info[0], datetime=info[2]) # Add query, ID and Datetime and let add_query split/add the query
         
-        with open("query_log.json", "w") as outfile:
-            json.dump(self.queries, outfile)
+                with open("query_log.json", "w") as outfile:
+                    json.dump(self.queries, outfile)
 
     def load_queries(self):
         with open('query_log.json') as json_file:
@@ -79,21 +79,17 @@ class QueryLogger(object):
             best_queries.sort(reverse=True, key=tuple_sort)
             best_queries = best_queries[:5]
             retVal = {}
-            print("Best queries: ", best_queries)
             retVal["Suggestions"] = remove_tuples_and_jsonify(best_queries)
             retVal["ResultLength"] = len(best_queries)
             retVal = json.dumps(retVal)
-            print(retVal)
             return retVal
         else:
             good_queries.sort(reverse=True, key=tuple_sort)
             good_queries = good_queries[:5]
             retVal = {}
-            print("Good queries: ", good_queries)
             retVal["Suggestions"] = remove_tuples_and_jsonify(good_queries)
             retVal["ResultLength"] = len(good_queries)
             retVal = json.dumps(retVal)
-            print(retVal)
             return retVal
         
 
@@ -122,6 +118,7 @@ if __name__ == "__main__":
     QueryLogger = QueryLogger()
     print("---- Load AOL Queries")
     QueryLogger.load_queries()
+    QueryLogger.load_and_write_aol_queries()
     print("---- Print Queries")
     queries = QueryLogger.queries.keys()
     for query in queries:
