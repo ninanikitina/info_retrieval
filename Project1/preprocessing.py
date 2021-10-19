@@ -218,7 +218,7 @@ def main():
     tokenize_new_corpus = False  # False saves 10 hours for wiki collection. True if need to preprocess new text corpus. Preprocessing takes from 10 to 12 hours
     create_new_dictionary = False  # False saves 10 seconds for wiki collection.
     clean_tokenized_corpus = False
-    myPath = "C:\\Users\\steph\\source\\repos\\info_retrieval\\Project1\\"
+    myPath = ""
 
     # Disney collection for fast tests
     #corp_file_nme = "preprocessed_files/disney_plus_shows.csv"

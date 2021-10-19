@@ -139,4 +139,4 @@ class IndexTerm(object):
             doc_scores[d] = relevance_score
         element_num = max_num if max_num < len(doc_scores) else len(doc_scores)
 
-        return sorted(doc_scores, key=doc_scores.get, reverse=True)[:element_num]
+        return sorted(doc_scores, key=doc_scores.get, reverse=True)[:element_num], doc_scores
