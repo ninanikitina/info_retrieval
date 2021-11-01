@@ -2,39 +2,24 @@ import time
 import pickle
 import pandas as pd
 import json
-#from Project1.preprocessing import tokanize_text
-#from Project1.GenerateSnippets_v2 import GenerateSnippets
-#from Project1.QueryLogger import QueryLogger
 from Project1.preprocessing import tokanize_text
 from Project1.GenerateSnippets_v2 import GenerateSnippets
-from Project1.QueryLogger import QueryLogger
 
 
 
 class SearchEngineData():
     def __init__(self):
-        self.query_logger = QueryLogger()
-
+        self.a = 1
 
     def run_query(self, query_sent="No query submitted"):
         if query_sent == "No query submitted":
             return "No query submitted"
         print("Uploading data...")
-        myp = ""
 
-        # corpus_df_name = "preprocessed_files/wiki_df.ftr"         # TODO: https://drive.google.com/drive/folders/1rSeosE42x1R4yW014VgmFhJGA5Yj8qOr?usp=sharing
-        # index_file_name = "preprocessed_files/wiki_index.pickle"  # TODO: Download file from google drive and move to the preprocessed_files folder in the Project1 directory
-        # results_file_name = "preprocessed_files/rank.csv"
-
-        ## Stephs filepaths
-        myp = ""
-        corpus_df_name = myp + "preprocessed_files\\wiki_df.ftr"
-        index_file_name = myp + "preprocessed_files\\wiki_index.pickle"
-        results_file_name = myp + "preprocessed_files\\rank.csv"
-
-        # corpus_df_name = "wiki_df.ftr"         # TODO: https://drive.google.com/drive/folders/1rSeosE42x1R4yW014VgmFhJGA5Yj8qOr?usp=sharing
-        # index_file_name = "wiki_index.pickle"  # TODO: Download file from google drive and move to the preprocessed_files folder in the Project1 directory
-        results_file_name = "rank.csv"
+        myPath = ""
+        corpus_df_name = myPath + "preprocessed_files\\article_df.ftr"
+        index_file_name = myPath + "preprocessed_files\\articles_index.pickle"
+        results_file_name = myPath + "preprocessed_files\\rank.csv"
 
         with open(index_file_name, 'rb') as handle:
             index = pickle.load(handle)
@@ -63,7 +48,7 @@ class SearchEngineData():
 
 def main():
     tester = SearchEngineData()
-    tester.run_query(query_sent="Tesla")
+    tester.run_query(query_sent="What century did the Normans first gain their separate identity?")
 
 if __name__ == "__main__":
     main()

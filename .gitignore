@@ -8,3 +8,7 @@ Project1/stanford/
 
 Project1/preprocessed_files/*.ftr
 Project1/preprocessed_files/*.pickle
+
+Project2/preprocessed_files/*.ftr
+Project2/preprocessed_files/*.pickle
+Project2/preprocessed_files/*.json
