@@ -4,12 +4,14 @@ import pandas as pd
 import json
 from Project1.preprocessing import tokanize_text
 from Project1.GenerateSnippets_v2 import GenerateSnippets
+from Project2.QueryLogger import QueryLogger
 
 
 
 class SearchEngineData():
     def __init__(self):
         self.a = 1
+        self.query_logger = QueryLogger()
 
     def run_query(self, query_sent="No query submitted"):
         if query_sent == "No query submitted":
