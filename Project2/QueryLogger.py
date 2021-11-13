@@ -64,12 +64,14 @@ class QueryLogger(object):
     def get_suggestions(self, query):
         # Split query into individual words and perform string preprocessing
         words = query.lower().split()
+        
+        # Create lists to use for future recommendation filtering
         unigram_list = []
         bitrigram_list = []
         topic_list = []
 
-
-        if len(words) > 3:
+        # If query is long enough, create unigrams/bigrams/trigrams and add known searches to the lists
+        if len(words) >= 3:
             for x in range (0, len(words) -3):
                 trigram = words[x] + " " + words[x+1] + " " +  words[x+2]
                 if trigram in self.recommendations['trigrams']:
@@ -85,8 +87,10 @@ class QueryLogger(object):
                 if unigram in self.recommendations['unigrams']:
                     for key in self.recommendations['unigrams'][unigram].keys():
                         unigram_list.append((key, self.recommendations['unigrams'][unigram][key]))
-
-        elif len(words) <= 3:
+                        
+                        
+        # If query is less than 3, check for bigrams and unigrams only
+        elif len(words) < 3:
             for x in range (0, len(words)):
                 unigram = words[x]
                 if x+1 == len(words):
@@ -102,22 +106,20 @@ class QueryLogger(object):
                     for key in self.recommendations['unigrams'][unigram].keys():
                         unigram_list.append((key, self.recommendations['unigrams'][unigram][key]))
 
-
-
-        # Go through each word in a query
+        # Go through each word in the query to search for topics
         for word in words:
-            # Check the queries searched based on the weird
+            # Check if there is a topic for each word
             if word in self.recommendations['topics']:
                 for key in self.recommendations['topics'][word].keys():
                     topic_list.append((word, key, self.recommendations['topics'][word][key]))
 
-        # For each query, check if all query words are found in that query
+        # For each list, sort so the most frequently are at the top
         topic_list.sort(reverse=True, key=tuple_sort)
         bitrigram_list.sort(reverse=True, key=tuple_sort)
         unigram_list.sort(reverse=True, key=tuple_sort)
 
-        retVal = set()
-        while ((len(topic_list) != 0 or len(topic_list) != 0 or len(unigram_list) != 0) and (len(retVal) <= 5)):
+        retVal = set() # Ensure no duplicates by making this a set
+        while ((len(topic_list) != 0 or len(topic_list) != 0 or len(unigram_list) != 0) and (len(retVal) <= 5)): # Loop through until RetVal has 5 values or there are no more values left to loop through. Ratio is for 1 unigram/2 bigrams or trigrams/ 3 topics ideally
             if len(unigram_list) > 0:
                 retVal.add(unigram_list.pop(0)[0])
             if len(bitrigram_list) > 0:
@@ -131,13 +133,16 @@ class QueryLogger(object):
             if len(topic_list) > 0:
                 retVal.add(topic_list.pop(0)[1])
         
+        # If no thing found, return that no results were found
         if len(retVal) == 0:
-            retVal = "No results found"
+            retVal = "No results found"  
+        # Else, set retVal to a list so it can be sorted by length and returned shortest recommendation to longest recommendation
         else:
            retVal =  list(retVal)
            retVal.sort(key=len)
         
-        retVal = json.dumps({"recommendations":retVal})
+        # Create a JSON string for pushing to the website
+        retVal = json.dumps({"recommendations": retVal})
         return retVal
 
 def tuple_sort(tuple):
