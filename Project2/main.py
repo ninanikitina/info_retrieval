@@ -3,19 +3,23 @@ import pickle
 import pandas as pd
 import json
 from Project1.preprocessing import tokanize_text
+from Project1.preprocessing import tokenize_query
 from Project1.GenerateSnippets_v2 import GenerateSnippets
+from Project2.QueryLogger import QueryLogger
 
 
 
 class SearchEngineData():
     def __init__(self):
         self.a = 1
+        self.query_logger = QueryLogger()
 
     def run_query(self, query_sent="No query submitted"):
         if query_sent == "No query submitted":
             return "No query submitted"
         print("Uploading data...")
 
+        #myPath = "C:\\Users\\steph\\source\\repos\\info_retrieval\\Project2\\"
         myPath = ""
         corpus_df_name = myPath + "preprocessed_files\\article_df.ftr"
         index_file_name = myPath + "preprocessed_files\\articles_index.pickle"
@@ -29,11 +33,12 @@ class SearchEngineData():
 
         print("Building rank...")
         query = tokanize_text(query_sent, lower=True, remove_digits=True, is_lemmatized=True, remove_stop_words=True)
+        #query = tokenize_query(query_sent, lower=True, remove_digits=True, is_lemmatized=True, remove_stop_words=True)
         rank, all_rank = index.rank_docs(query, max_num=5)
         print(all_rank)
         print(rank)
         print("Rank is created")
-
+       
         print("Generating snippets...")
         snippet_obj = GenerateSnippets(index.get_terms(), df)
         snippets_df = snippet_obj.getSnippets(query_sent, rank)
@@ -47,10 +52,14 @@ class SearchEngineData():
         return snippets_json
 
 
+        
+
+
 def main():
     tester = SearchEngineData()
     tester.run_query(query_sent="Chopin")
     a = 1
+
 
 if __name__ == "__main__":
     main()

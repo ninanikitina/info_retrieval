@@ -2,10 +2,12 @@ from nltk.tokenize import RegexpTokenizer
 import pandas as pd
 import csv
 import time
+import nltk
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus.reader.wordnet import VERB, NOUN, ADJ, ADV
 from nltk.tag import StanfordPOSTagger
 from nltk.corpus import stopwords
+from nltk import word_tokenize
 from tqdm import tqdm
 from functools import lru_cache
 from collections import defaultdict
@@ -195,6 +197,61 @@ def tokanize_text(text, lower, remove_digits, is_lemmatized, remove_stop_words):
     return tokens
 
 
+def tokenize_query(query, lower, remove_digits, is_lemmatized, remove_stop_words):
+    # tokanize content and title of each document in the corpus, remove punctuation,
+    # lower case all words if lower is True or keep original case otherwise
+    dict = queryTag(query)
+
+    tokenizer = RegexpTokenizer(r'\w+')
+    tokens = []
+    if isinstance(query, str):
+        tokens.extend(tokenizer.tokenize(query.lower() if lower else query))
+    stop_words = set(stopwords.words('english'))
+
+    # remove stop words
+    if remove_stop_words:
+        tokens = [word for word in tokens if word not in stop_words]
+
+    # Remove digits
+    if remove_digits:
+        tokens = [word for word in tokens if not word.isdigit()]
+
+    # Lemmatized words
+    if is_lemmatized:
+        # tokens = lemmatize(tokens)
+        temp = []
+        for word in tokens:
+            temp.extend(ll(word))
+    newDict = {}
+    for t in tokens:
+        newDict.setdefault(t, False)
+        if t in dict.keys():
+            newDict[t] = dict[t]
+   
+    for t in newDict.keys():
+        print("%s %s" % (t, newDict[t]))
+    print(tokens)
+
+    return newDict
+
+
+def queryTag(query):
+    query1 = word_tokenize(query)
+    queryList = nltk.pos_tag(query1)
+    dict = {}
+
+    for w in queryList:
+        proc_word = w[0].lower()
+        #proc_word = ll(proc_word)
+        dict.setdefault(proc_word, False)
+        if w[1].startswith("NN"):
+            dict[proc_word] = True
+
+    for t in dict.keys():
+        print("%s %s" % (t, dict[t]))
+    return dict
+
+
 def tokanize_corpus(df, lower, remove_digits, is_lemmatized, remove_stop_words, df_file_name):
     """
     Tokenize "content" and "title" columns of corpus, based on provided flags
@@ -263,12 +320,13 @@ def main():
     tokenize_new_corpus = True
     create_new_dictionary = True
     clean_tokenized_corpus = True
+    #myPath = "C:\\Users\\steph\\source\\repos\\info_retrieval\\Project2\\"
     find_test_questions = True
     myPath = ""
     MIN_WORD_FREQ = 3
 
     # Wiki collection for main project
-    json_file_name_1 = myPath + "preprocessed_files\\dev-v2.0.json"
+    json_file_name_1 = myPath + "preprocessed_files\\dev-v2.0.json" 
     json_file_name_2 = myPath + "preprocessed_files\\train-v2.0.json"
     corpus_df_name = myPath + "preprocessed_files\\article_df.ftr"
 
