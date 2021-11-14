@@ -198,8 +198,13 @@ def tokanize_text(text, lower, remove_digits, is_lemmatized, remove_stop_words):
 
 
 def tokenize_query(query, lower, remove_digits, is_lemmatized, remove_stop_words):
-    # tokanize content and title of each document in the corpus, remove punctuation,
-    # lower case all words if lower is True or keep original case otherwise
+
+    """ Preprocesses query (question) and returns dictionary   
+    : lower case all words if lower is True or keep original case
+    : calls queryTag() to get dictionary of tokens and whether or not they are a noun 
+    : compares tokens from preprocessed query (question) and compares it to keys in dictionary
+    : returns a dictionary of tokens from preprocessed query as key and True or False as value --> {Noun: True}
+    """
     dict = queryTag(query)
 
     tokenizer = RegexpTokenizer(r'\w+')
@@ -228,14 +233,20 @@ def tokenize_query(query, lower, remove_digits, is_lemmatized, remove_stop_words
         if t in dict.keys():
             newDict[t] = dict[t]
    
-    for t in newDict.keys():
-        print("%s %s" % (t, newDict[t]))
-    print(tokens)
+    #for t in newDict.keys():
+    #    print("%s %s" % (t, newDict[t]))
+    #print(tokens)
 
     return newDict
 
 
 def queryTag(query):
+    """ Takes query and determines if each token is a noun or not   
+    : lower case all words
+    : uses nltk pos_tag to determine if word is a noun or not
+    : creates dictionary using words from query (question) as keys and value of True or False 
+    : returns the dictionary --> {Noun: True}
+    """
     query1 = word_tokenize(query)
     queryList = nltk.pos_tag(query1)
     dict = {}
@@ -247,9 +258,9 @@ def queryTag(query):
         if w[1].startswith("NN"):
             dict[proc_word] = True
 
-    for t in dict.keys():
-        print("%s %s" % (t, dict[t]))
-    return dict
+    #for t in dict.keys():
+    #    print("%s %s" % (t, dict[t]))
+    #return dict
 
 
 def tokanize_corpus(df, lower, remove_digits, is_lemmatized, remove_stop_words, df_file_name):
