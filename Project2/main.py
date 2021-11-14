@@ -25,6 +25,7 @@ class SearchEngineData():
             index = pickle.load(handle)
         df = pd.read_feather(corpus_df_name, columns=None, use_threads=True)
         print("Data successfully uploaded")
+        df.to_csv('test.csv')
 
         print("Building rank...")
         query = tokanize_text(query_sent, lower=True, remove_digits=True, is_lemmatized=True, remove_stop_words=True)
@@ -48,7 +49,8 @@ class SearchEngineData():
 
 def main():
     tester = SearchEngineData()
-    tester.run_query(query_sent="What century did the Normans first gain their separate identity?")
+    tester.run_query(query_sent="Chopin")
+    a = 1
 
 if __name__ == "__main__":
     main()

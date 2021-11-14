@@ -13,6 +13,8 @@ import matplotlib.pyplot as plt
 import pickle
 from Project1.IndexTerm import IndexTerm
 import json
+from random import randrange
+
 
 lemmatizer = WordNetLemmatizer()
 ll = lru_cache(maxsize=50000)(lemmatizer.lemmatize) # this will help to speed up lemmatizing process
@@ -42,6 +44,33 @@ def clean_df(tokenized_df, dictionary, min_frequency_term, tokenized_clean_df_na
         clean_df = clean_df.append({'all_content': updated_tokens, 'id': id[i]}, ignore_index=True)
     clean_df.to_feather(tokenized_clean_df_name)
     return clean_df
+
+def chose_questions(filename, df_name):
+    df = pd.DataFrame(columns=["question", "answer"])
+    with open(filename) as f:
+        data = json.load(f)
+    for i, article in enumerate(data.get("data")):
+        if i == 439:
+            break
+        is_impossible = True
+        paragraph_num = len(article.get('paragraphs'))
+        if paragraph_num == 0:
+            continue
+        while (is_impossible):
+            chosen_paragraph = randrange(paragraph_num)
+            question_num = len(article.get('paragraphs')[chosen_paragraph].get('qas'))
+            if question_num == 0:
+                continue
+            chosen_question = randrange(question_num)
+            is_impossible = article.get('paragraphs')[chosen_paragraph].get('qas')[chosen_question].get('is_impossible')
+        question = article.get('paragraphs')[chosen_paragraph].get('qas')[chosen_question].get('question')
+        answer = article.get('paragraphs')[chosen_paragraph].get('qas')[chosen_question].get('answers')[0].get('text')
+        df = df.append({'question': question, 'answer': answer}, ignore_index=True)
+        print(i)
+    df.to_feather(df_name)
+    return df
+
+
 
 def read_corpus(filename_1, filename_2, df_file_name):
     """
@@ -234,6 +263,7 @@ def main():
     tokenize_new_corpus = True
     create_new_dictionary = True
     clean_tokenized_corpus = True
+    find_test_questions = True
     myPath = ""
     MIN_WORD_FREQ = 3
 
@@ -246,11 +276,15 @@ def main():
     tokenized_df_name = myPath + "preprocessed_files\\articles_tokenized_df.ftr"
     tokenized_clean_df_name = myPath + "preprocessed_files\\articles_tokenized_clean_df.ftr"
     index_file_name = myPath + "preprocessed_files\\articles_index.pickle"
+    questions_df_name = myPath + "preprocessed_files\\questions_df.ftr"
 
 
     if read_new_corpus:
         df = read_corpus(filename_1=json_file_name_1, filename_2=json_file_name_2, df_file_name=corpus_df_name)
         print(df)
+    if find_test_questions:
+        df_questions_answers = chose_questions(filename=json_file_name_2, df_name=questions_df_name)
+
 
     if tokenize_new_corpus:
         # Tokenize corpus or download previously tokenized
