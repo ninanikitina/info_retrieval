@@ -14,8 +14,8 @@ class QueryCreator():
 
     def create_topics(self): # Loads AOL Queries from our program and loads all queries
 
-        for file in os.listdir(f"Project2\\preprocessing_files"):
-            read_file = open(f"Project2\\preprocessing_files\\{file}", 'r')
+        for file in os.listdir(f"\\Project2\\preprocessing_files"):
+            read_file = open(f"\\Project2\\preprocessing_files\\{file}", 'r')
             print(f"-- Reading in {file} --")
             json_data = json.load(read_file)
             paragraphs = json_data["data"] # Pull data from the json
@@ -27,7 +27,7 @@ class QueryCreator():
                             self.process_query(noun, query_processed['original_query'])
                         
 
-        with open(f"Project2\\recommendations.json", "w") as outfile:
+        with open(f"\\Project2\\recommendations.json", "w") as outfile:
             json.dump(self.recommendations, outfile, sort_keys=True, indent=4)        
 
     def process_query(self, noun, query, query_type='topics'):
@@ -41,8 +41,8 @@ class QueryCreator():
                 self.recommendations[query_type][noun][query] += 1
 
     def create_ngrams(self):
-        for file in os.listdir(f"Project2\\preprocessing_files"):
-            read_file = open(f"Project2\\preprocessing_files\\{file}", 'r')
+        for file in os.listdir(f"\\Project2\\preprocessing_files"):
+            read_file = open(f"\\Project2\\preprocessing_files\\{file}", 'r')
             print(f"-- Reading in {file} --")
             json_data = json.load(read_file)
             paragraphs = json_data["data"] # Pull data from the json
@@ -68,15 +68,16 @@ class QueryCreator():
                                     self.process_query(unigram.lower(), words[x+1] + " " + words[x+2], "unigrams")
                                 if (x+3) < len(words):
                                     self.process_query(unigram.lower(), words[x+1] + " " + words[x+2] + " " + words[x+3], "unigrams")
-            with open(f"Project2\\recommendations.json", "w") as outfile:
+
+            with open(f"\\Project2\\recommendations.json", "w") as outfile:
                     json.dump(self.recommendations, outfile, sort_keys=True, indent=4)   
 
-        with open(f"Project2\\recommendations.json", "w") as outfile:
+        with open(f"\\Project2\\recommendations.json", "w") as outfile:
                     json.dump(self.recommendations, outfile, sort_keys=True, indent=4)
 
 
     def load_recommendations(self):
-        f = open(f"Project2\\recommendations-topics.json")
+        f = open(f"\\Project2\\recommendations-topics.json")
         self.recommendations = json.load(f)
 
 if __name__ == "__main__":

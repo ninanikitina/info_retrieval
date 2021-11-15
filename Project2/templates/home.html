@@ -141,39 +141,39 @@
         var xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function() {
             if (xhr.readyState == XMLHttpRequest.DONE) {
-            var data = JSON.parse(xhr.response)
-            console.log(xhr.response)
-            console.log(data)
-            if (data.Suggestions[0]) {
-                document.getElementById("querysug1").innerHTML = data.Suggestions[0];
-            } else {
-                document.getElementById("querysug1").innerHTML = "No more suggestions";
-                }
-            if (data.Suggestions[1]) {
-                document.getElementById("querysug2").innerHTML = data.Suggestions[1];
-            } else {
-                document.getElementById("querysug2").innerHTML = "No more suggestions";
-            }
-            if (data.Suggestions[2]) {
-                document.getElementById("querysug3").innerHTML = data.Suggestions[2];
-            } else {
-                document.getElementById("querysug3").innerHTML = "No more suggestions";
-            }
-            if (data.Suggestions[3]) {
-                document.getElementById("querysug4").innerHTML = data.Suggestions[3];
-            } else {
-                document.getElementById("querysug4").innerHTML = "No more suggestions";
-            }
-            if (data.Suggestions[4]) {
-                document.getElementById("querysug5").innerHTML = data.Suggestions[5];
-            } else {
-                document.getElementById("querysug5").innerHTML = "No more suggestions";
-            }
-            document.getElementById("querysug1").innerHTML = data.Suggestions[0];
-            document.getElementById("querysug2").innerHTML = data.Suggestions[1];
-            document.getElementById("querysug3").innerHTML = data.Suggestions[2];
-            document.getElementById("querysug4").innerHTML = data.Suggestions[3];
-            document.getElementById("querysug5").innerHTML = data.Suggestions[4];
+              var data = JSON.parse(xhr.response)
+              console.log(xhr.response)
+              console.log(data)
+              if (data.recommendations[0]) {
+                  document.getElementById("querysug1").innerHTML = data.recommendations[0];
+              } else {
+                  document.getElementById("querysug1").innerHTML = "No more suggestions";
+                  }
+              if (data.recommendations[1]) {
+                  document.getElementById("querysug2").innerHTML = data.recommendations[1];
+              } else {
+                  document.getElementById("querysug2").innerHTML = "No more suggestions";
+              }
+              if (data.recommendations[2]) {
+                  document.getElementById("querysug3").innerHTML = data.recommendations[2];
+              } else {
+                  document.getElementById("querysug3").innerHTML = "No more suggestions";
+              }
+              if (data.recommendations[3]) {
+                  document.getElementById("querysug4").innerHTML = data.recommendations[3];
+              } else {
+                  document.getElementById("querysug4").innerHTML = "No more suggestions";
+              }
+              if (data.recommendations[4]) {
+                  document.getElementById("querysug5").innerHTML = data.recommendations[5];
+              } else {
+                  document.getElementById("querysug5").innerHTML = "No more suggestions";
+              }
+            document.getElementById("querysug1").innerHTML = data.recommendations[0];
+            document.getElementById("querysug2").innerHTML = data.recommendations[1];
+            document.getElementById("querysug3").innerHTML = data.recommendations[2];
+            document.getElementById("querysug4").innerHTML = data.recommendations[3];
+            document.getElementById("querysug5").innerHTML = data.recommendations[4];
             }
           } 
           xhr.open("POST", Url, true);

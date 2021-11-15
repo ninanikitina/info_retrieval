@@ -11,7 +11,7 @@ class QueryLogger(object):
         self.list_of_all_queries = []
 
     def load_queries(self):
-        with open('Project2\\recommendations.json') as json_file:
+        with open(f'Project2\\recommendations.json') as json_file:
              self.recommendations = json.load(json_file)
     
     async def save_queries(self):
@@ -135,7 +135,7 @@ class QueryLogger(object):
         
         # If no thing found, return that no results were found
         if len(retVal) == 0:
-            retVal = "No results found"  
+            retVal = ['','','','','']  
         # Else, set retVal to a list so it can be sorted by length and returned shortest recommendation to longest recommendation
         else:
            retVal =  list(retVal)
