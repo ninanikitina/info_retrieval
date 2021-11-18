@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 import pickle
 from Project1.IndexTerm import IndexTerm
 
-
+stop_words = set(stopwords.words('english'))
 lemmatizer = WordNetLemmatizer()
 ll = lru_cache(maxsize=50000)(lemmatizer.lemmatize) # this will help to speed up lemmatizing process
 
@@ -138,7 +138,6 @@ def tokanize_text(text, lower, remove_digits, is_lemmatized, remove_stop_words):
     tokens = []
     if isinstance(text, str):
         tokens.extend(tokenizer.tokenize(text.lower() if lower else text))
-    stop_words = set(stopwords.words('english'))
 
     # remove stop words
     if remove_stop_words:

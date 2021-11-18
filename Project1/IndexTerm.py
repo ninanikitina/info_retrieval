@@ -64,6 +64,85 @@ class IndexTerm(object):
             doc_max_term[id[i]] = max_value
         return doc_max_term
 
+    def rank_docs_w_entities(self, query, max_num, coeff):
+        """
+        Choose a set of documents CR comprised of all the documents in DC
+        that contain each of the terms in q.
+        If there are less than 50 documents, then consider resources in DC
+        that contain n-1 terms in q (all the combinations).
+        Calculate relevance score for each document and return five most rated documents.
+        The 𝑅𝑒𝑙𝑒𝑣𝑎𝑛𝑐𝑒𝑆𝑐𝑜𝑟𝑒(𝑞, 𝑑) = ∑ 𝑇𝐹 (𝑤, 𝑑) × 𝐼𝐷𝐹(𝑤)
+        if the word is entity score is increase by specified coeff
+        𝑇𝐹(𝑤, 𝑑) = 𝑓𝑟𝑒𝑞(𝑤, 𝑑) / 𝑚𝑎𝑥_d
+            freq(w, d) is the number of times w appears in the document
+            max_d is the number of times the most frequently-occurred term appears in the document
+        𝐼𝐷𝐹(𝑤) = 𝑙𝑜𝑔2(𝑁/𝑛)
+            N is the number of documents in DC
+            n is the number of documents in DC in which w appears at least once
+
+            ----------
+            tokenized_df : df
+                Data frame with 2 columns:
+                "document_id" (int) | "all_content" (list of tokens)
+        """
+        #  Calculate 𝐼𝐷𝐹(𝑤) = 𝑙𝑜𝑔2(𝑁/𝑛) for each term in the query
+        idf_words = []
+        for key in query:
+            if key in self.term_freq:
+                word_doc_num = len(self.term_freq[key])
+                idf_w = math.log2(self.docs_num / word_doc_num)
+                idf_words.append(idf_w)
+            else:
+                idf_words.append(0)
+
+        #  Choose a set of documents CR comprised of all the documents in DC
+        #  that contain each of the terms in q.
+        all_docs_id = set()
+        chosen_docs_id = set()
+        docs_term_sets = []
+        for i, key in enumerate(query):
+            if key in self.term_freq:
+                docs = set(k for k, v in self.term_freq[key].items())
+                temp = docs.copy()
+                docs_term_sets.append(temp)
+                if i == 0:
+                    chosen_docs_id = docs
+                else:
+                    chosen_docs_id.intersection_update(docs)
+                all_docs_id.update(docs)
+        #  If there are less than 50 documents, then consider resources in DC
+        #  that contain n-1 terms in q (all the combinations), then n-2 ect.
+        min_q = len(query) - 1
+        while len(chosen_docs_id) < 50 and min_q >= 1:
+            all_docs_id.difference_update(chosen_docs_id)
+            for d in all_docs_id:
+                count = 0
+                for s in docs_term_sets:
+                    if d in s:
+                        count = count + 1
+                if count >= min_q:
+                    chosen_docs_id.add(d)
+            min_q = min_q - 1
+
+        #  𝑇𝐹(𝑤, 𝑑) = 𝑓𝑟𝑒𝑞(𝑤, 𝑑) / 𝑚𝑎𝑥_d
+        doc_scores = {}
+        for d in chosen_docs_id:
+            max_d = self.doc_max_term.get(d)
+            relevance_score = 0
+            for i, key in enumerate(query):
+                if idf_words[i] == 0:
+                    continue
+                frequency_w_d = self.term_freq.get(key).get(d)
+                tf_w_d = frequency_w_d / max_d if frequency_w_d is not None else 0
+                #  𝑅𝑒𝑙𝑒𝑣𝑎𝑛𝑐𝑒𝑆𝑐𝑜𝑟𝑒(𝑞, 𝑑) = ∑ 𝑇𝐹(𝑤, 𝑑) × 𝐼𝐷𝐹(𝑤)
+                term_coeff = coeff if query[key] else 1
+                relevance_score = relevance_score + tf_w_d * idf_words[i] * term_coeff
+            doc_scores[d] = relevance_score
+        element_num = max_num if max_num < len(doc_scores) else len(doc_scores)
+
+        return sorted(doc_scores, key=doc_scores.get, reverse=True)[:element_num], doc_scores
+
+
 
     def rank_docs(self, query, max_num):
         """

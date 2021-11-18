@@ -17,8 +17,9 @@ from Project1.IndexTerm import IndexTerm
 import json
 from random import randrange
 
-
+stop_words = set(stopwords.words('english'))
 lemmatizer = WordNetLemmatizer()
+tokenizer = RegexpTokenizer(r'\w+')
 ll = lru_cache(maxsize=50000)(lemmatizer.lemmatize) # this will help to speed up lemmatizing process
 
 
@@ -173,11 +174,25 @@ def lemmatize (tokens):
 def tokanize_text(text, lower, remove_digits, is_lemmatized, remove_stop_words):
     # tokanize content and title of each document in the corpus, remove punctuation,
     # lower case all words if lower is True or keep original case otherwise
-    tokenizer = RegexpTokenizer(r'\w+')
+    tokens = get_tokens(text, remove_digits, remove_stop_words)
+
+    if lower:
+        tokens = [word.lower() for word in tokens]
+
+    # Lemmatized words
+    if is_lemmatized:
+        # tokens = ll(tokens)
+        # temp = []
+        # for word in tokens:
+        #     temp.extend(ll(word))
+        tokens = [ll(word) for word in tokens]
+
+    return tokens
+
+def get_tokens(query, remove_digits, remove_stop_words):
     tokens = []
-    if isinstance(text, str):
-        tokens.extend(tokenizer.tokenize(text.lower() if lower else text))
-    stop_words = set(stopwords.words('english'))
+    if isinstance(query, str):
+        tokens.extend(tokenizer.tokenize(query))
 
     # remove stop words
     if remove_stop_words:
@@ -186,16 +201,7 @@ def tokanize_text(text, lower, remove_digits, is_lemmatized, remove_stop_words):
     # Remove digits
     if remove_digits:
         tokens = [word for word in tokens if not word.isdigit()]
-
-    # Lemmatized words
-    if is_lemmatized:
-        # tokens = lemmatize(tokens)
-        temp = []
-        for word in tokens:
-            temp.extend(ll(word))
-
     return tokens
-
 
 def tokenize_query(query, lower, remove_digits, is_lemmatized, remove_stop_words):
 
@@ -205,37 +211,14 @@ def tokenize_query(query, lower, remove_digits, is_lemmatized, remove_stop_words
     : compares tokens from preprocessed query (question) and compares it to keys in dictionary
     : returns a dictionary of tokens from preprocessed query as key and True or False as value --> {Noun: True}
     """
-    dict = queryTag(query)
-
-    tokenizer = RegexpTokenizer(r'\w+')
-    tokens = []
-    if isinstance(query, str):
-        tokens.extend(tokenizer.tokenize(query.lower() if lower else query))
-    stop_words = set(stopwords.words('english'))
-
-    # remove stop words
-    if remove_stop_words:
-        tokens = [word for word in tokens if word not in stop_words]
-
-    # Remove digits
-    if remove_digits:
-        tokens = [word for word in tokens if not word.isdigit()]
+    tokens = get_tokens(query, remove_digits, remove_stop_words)
+    dict = queryTag(tokens)
 
     # Lemmatized words
     if is_lemmatized:
-        # tokens = lemmatize(tokens)
-        temp = []
-        for word in tokens:
-            temp.extend(ll(word))
-    newDict = {}
-    for t in tokens:
-        newDict.setdefault(t, False)
-        if t in dict.keys():
-            newDict[t] = dict[t]
-   
-    #for t in newDict.keys():
-    #    print("%s %s" % (t, newDict[t]))
-    #print(tokens)
+        newDict = {}
+        for key, value in dict.items():
+            newDict[ll(key)] = value
 
     return newDict
 
@@ -247,20 +230,19 @@ def queryTag(query):
     : creates dictionary using words from query (question) as keys and value of True or False 
     : returns the dictionary --> {Noun: True}
     """
-    query1 = word_tokenize(query)
-    queryList = nltk.pos_tag(query1)
+
+    # query1 = word_tokenize(query)
+    queryList = nltk.pos_tag(query)
     dict = {}
 
     for w in queryList:
         proc_word = w[0].lower()
         #proc_word = ll(proc_word)
         dict.setdefault(proc_word, False)
-        if w[1].startswith("NN"):
+        if w[1].startswith("NNP"):
             dict[proc_word] = True
 
-    #for t in dict.keys():
-    #    print("%s %s" % (t, dict[t]))
-    #return dict
+    return dict
 
 
 def tokanize_corpus(df, lower, remove_digits, is_lemmatized, remove_stop_words, df_file_name):

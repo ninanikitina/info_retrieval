@@ -2,8 +2,8 @@ import time
 import pickle
 import pandas as pd
 import json
-from Project1.preprocessing import tokanize_text
-from Project1.preprocessing import tokenize_query
+from Project2.preprocessing import tokanize_text
+from Project2.preprocessing import tokenize_query
 from Project1.GenerateSnippets_v2 import GenerateSnippets
 from Project2.QueryLogger import QueryLogger
 
@@ -14,7 +14,7 @@ class SearchEngineData():
         self.a = 1
         self.query_logger = QueryLogger()
 
-    def run_query(self, query_sent="No query submitted"):
+    def  run_query(self, query_sent="No query submitted", add_entities=False):
         if query_sent == "No query submitted":
             return "No query submitted"
         print("Uploading data...")
@@ -32,9 +32,15 @@ class SearchEngineData():
         df.to_csv('test.csv')
 
         print("Building rank...")
-        query = tokanize_text(query_sent, lower=True, remove_digits=True, is_lemmatized=True, remove_stop_words=True)
-        #query = tokenize_query(query_sent, lower=True, remove_digits=True, is_lemmatized=True, remove_stop_words=True)
-        rank, all_rank = index.rank_docs(query, max_num=5)
+        if add_entities:
+            test_query_w_entities = tokenize_query(query_sent, lower=True, remove_digits=True, is_lemmatized=True,
+                                                  remove_stop_words=True)
+            rank, all_rank = self.index.rank_docs_w_entities(test_query_w_entities, 5, entities_coeff=5)
+        else:
+            query = tokanize_text(query_sent, lower=True, remove_digits=True, is_lemmatized=True,
+                                  remove_stop_words=True)
+            rank, all_rank = index.rank_docs(query, max_num=5)
+
         print(all_rank)
         print(rank)
         print("Rank is created")
@@ -52,12 +58,12 @@ class SearchEngineData():
         return snippets_json
 
 
-        
 
 
 def main():
     tester = SearchEngineData()
-    tester.run_query(query_sent="Chopin")
+    tester.run_query(query_sent="To what position was Malenkov demoted?", add_entities=True)
+    test_query_tokanized = tokenize_query
     a = 1
 
 
