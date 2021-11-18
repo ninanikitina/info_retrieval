@@ -6,10 +6,11 @@ from waitress import serve
 app = Flask(__name__)
 CORS(app)
 import asyncio
+from main import SearchEngineData as SED
 from QueryLogger import QueryLogger
 
 x = QueryLogger()
-
+data = SED()
 
 @app.route('/')
 def hello():
